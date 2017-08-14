@@ -1,4 +1,5 @@
-const SERVER_ROOT = "http://localhost:8080/PSS/PSSv1.0/public/index.php/"
+const SERVER_ROOT = "http://localhost:8080/PSS/PSSv1.0/public/index.php/";
+const IMAGE_ROOT = "http://localhost:8080/PSS/PSSv1.0/";
 
 //将form中的值转换为键值对。
 function getFormJson(frm) {
