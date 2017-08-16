@@ -1,0 +1,121 @@
+<!-- Modal -->
+<div class="modal fade" id="modalContact" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <form action='{:Url("index/contact/save")}' id="formContact">
+        <div class="modal-dialog" role="document" id="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header box box-info">
+                    <h5 class="modal-title" id="exampleModalLabel">联系人管理</h5>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="control-label">姓名</label>
+                        <input type="text" class="form-control" placeholder="" id="txtUser" name="name"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">电话</label>
+                        <input type="text" class="form-control" placeholder="" id="txtPhone" name="phone"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">邮箱</label>
+                        <input type="text" class="form-control" placeholder="" id="txtEmail" name="email"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">职务</label>
+                        <input type="text" class="form-control" placeholder="" id="txtPosition" name="position"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">描述</label>
+                        <input type="text" class="form-control" placeholder="" id="txtDescription" name="description"/>
+                    </div>
+                </div>
+                <div class="popover popover-top">
+                    <h3 class="popover-title">Popover top</h3>
+                    <div class="popover-content">
+                        <p>Sed posuere consectetur est at lobortis. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum.</p>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="hidden" value="" id="txtId" name="id"/>
+                    <input type="hidden" value="" id="txtCompanyId" name="companyId"/>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="btnSave2"
+                            data-container="body"
+                            data-toggle="popover"
+                            data-placement="top"
+                            data-content="出错了"
+                            data-html="true"
+                            data-trigger="focus">保存</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    var $tableContact = $("#tblContact").bootstrapTable();
+
+    $("#btnAdd2").click(function () {
+        var rows = $table.bootstrapTable('getSelections');
+        if(rows.length > 0){
+
+            showContactModal("","","","","","",rows[0].id);
+        }
+        else {
+            alert("请至少选择一条公司记录");
+        }
+    });
+    
+    $("#btnSave2").click(function () {
+        $.ajax({
+            url:SERVER_ROOT + "index/contact/save",
+            type:"POST",
+            data:getFormJson($("#formContact")),
+            success:function (response) {
+                console.log(response);
+                if(response !== true){
+                    var msg = "";
+                    for(var key in response){
+                        msg += response[key] + "<br/>";
+                    }
+
+                    $("#btnSave2").attr('data-content',msg);
+                    $("#btnSave2").attr('title',"出错了");
+                    $("#btnSave2").popover('show');
+                }
+                else{
+                    $("#btnSave2").popover("hide");
+                    $("#modalContact").modal("hide");
+                    $tableContact.bootstrapTable("refresh");
+                }
+            }
+        });
+        return false;
+    });
+
+    function showContactModal(id, name, phone, email, position, description, company_id) {
+        $("input[name='id']").val(id);
+        $("input[name='companyId']").val(company_id);
+        $("input[name='name']").val(name);
+        $("input[name='phone']").val(phone);
+        $("input[name='email']").val(email);
+        $("input[name='position']").val(position);
+        $("input[name='description']").val(description);
+        $("#modalContact").modal("show");
+
+        console.log("company id is: " + company_id);
+    }
+
+    function tableActions2(value, row, index) {
+
+        return '<a href=javascript:showContactModal('+row.id+
+            ',\''+ encodeURI(row.name) +
+            '\',\''+ encodeURI(row.phone) +
+            '\',\''+ encodeURI(row.email) +
+            '\',\''+ encodeURIComponent(row.position) +
+            '\',\''+ encodeURIComponent(row.description) +
+            '\',\''+ encodeURIComponent(row.company_id) +
+            '\')'+' title="修改">' +
+            '<i class="glyphicon glyphicon-pencil"></i></a>';
+    }
+</script>
