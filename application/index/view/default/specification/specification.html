@@ -1,0 +1,44 @@
+{include file="../public/header" }
+<style type="text/css" href="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.css"></style>
+<script src="__ROOT__/js/jquery-3.2.1.min.js"></script>
+<script src="__ROOT__/tether-master/dist/js/tether.min.js"></script>
+<script src="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.js"></script>
+<script src="__ROOT__/js/pss-utils.js"></script>
+
+<script src="__ROOT__/select2-4.0.3/dist/js/select2.full.js"></script>
+<link rel="stylesheet" href="__ROOT__/select2-4.0.3/dist/css/select2.css">
+<link rel="stylesheet" href="__ROOT__/select2-4.0.3/dist/css/select2-bootstrap.css">
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>
+            规格管理
+            <small>规格</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Dashboard</li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="row">
+            <!-- left column -->
+            <div class="col-md-12">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">规格</h3>
+                    </div>
+                    <div class="box-group">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" id="btnAdd"><li class="glyphicon glyphicon-plus"></li></button>
+                            <button type="button" class="btn btn-danger" id="btnDelete"><li class="glyphicon glyphicon-trash"></li></button>
+                            <button type="button" class="btn btn-primary" id="btnActive"><li class="glyphicon glyphicon-ok"></li></button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{include file="../public/footer" }

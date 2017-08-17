@@ -1,0 +1,67 @@
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <form action='{:Url("index/specification/save")}' id="formSubmit">
+        <div class="modal-dialog" role="document" id="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header box box-info">
+                    <h5 class="modal-title" id="exampleModalLabel">联系人管理</h5>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="control-label">规格类型</label>
+                        <input type="text" class="form-control" placeholder="" id="txtSubject" name="subject"/>
+                    </div>
+
+
+                </div>
+                <div class="popover popover-top">
+                    <h3 class="popover-title">Popover top</h3>
+                    <div class="popover-content">
+                        <p>Sed posuere consectetur est at lobortis. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum.</p>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="hidden" value="" id="txtId" name="id"/>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="btnSave"
+                            data-container="body"
+                            data-toggle="popover"
+                            data-placement="top"
+                            data-content="出错了"
+                            data-html="true"
+                            data-trigger="focus">保存</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    $("#btnSave").click(function () {
+        $.ajax({
+            url:SERVER_ROOT + "index/specification/save",
+            type:"POST",
+            data:getFormJson($("#formSubmit")),
+            success:function (response) {
+                if(response !== true){
+                    var msg = "";
+                    for(var key in response){
+                        msg += response[key] + "<br/>";
+                    }
+
+                    $("#btnSave").attr('data-content',msg);
+                    $("#btnSave").attr('title',"出错了");
+                    $("#btnSave").popover('show');
+                }
+                else {
+                    $("#btnSave").popover("hide");
+                    $("#myModal").modal("hide");
+
+                    $table.bootstrapTable("refresh");
+                }
+            }
+        });
+        return false;
+    })
+</script>
