@@ -1,0 +1,147 @@
+{include file="../public/header" }
+<style type="text/css" href="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.css"></style>
+<script src="__ROOT__/js/jquery-3.2.1.min.js"></script>
+<script src="__ROOT__/tether-master/dist/js/tether.min.js"></script>
+<script src="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.js"></script>
+<script src="__ROOT__/js/pss-utils.js"></script>
+
+<script src="__ROOT__/select2-4.0.3/dist/js/select2.full.js"></script>
+<link rel="stylesheet" href="__ROOT__/select2-4.0.3/dist/css/select2.css">
+<link rel="stylesheet" href="__ROOT__/select2-4.0.3/dist/css/select2-bootstrap.css">
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>
+            产品分类管理
+            <small>分类列表</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Dashboard</li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="row">
+            <!-- left column -->
+            <div class="col-md-12">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">分类列表</h3>
+                    </div>
+                    <div class="box-group">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" id="btnAdd"><li class="glyphicon glyphicon-plus"></li></button>
+                            <button type="button" class="btn btn-danger" id="btnDelete"><li class="glyphicon glyphicon-trash"></li></button>
+                            <button type="button" class="btn btn-primary" id="btnActive"><li class="glyphicon glyphicon-ok"></li></button>
+                        </div>
+                    </div>
+                    <table id="table"
+                           data-pagination="true"
+                           data-side-pagination="server"
+                           data-click-to-select="true"
+                           data-page-number="1"
+                           data-page-size="{$pageSize}"
+                           data-row-style="rowStyle"
+                           data-url="{$serverRoot}/index/catalog/get">
+                        <thead>
+                            <tr>
+                                <th data-checkbox="true"></th>
+                                <th data-field="id">ID</th>
+                                <th data-field="subject" data-formatter="levelFormatter">名称</th>
+                                <th data-field="description">描述</th>
+                                <th data-formatter="parentFormatter">上一级</th>
+                                <th data-field="seqno"  >顺序</th>
+                                <th data-field="create_time" data-formatter="getLocalTime">创建日期</th>
+                                <th data-field="update_time" data-formatter="getLocalTime">修改日期</th>
+                                <th data-field="is_deleted" data-formatter="stateFormatter">状态</th>
+                                <th data-formatter="tableActions">Action</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{include file="_form"}
+<script type="text/javascript">
+    var $table= $('#table').bootstrapTable();
+
+    $("#btnAdd").click(function () {
+        showModal("","","","","","");
+    })
+
+    function levelFormatter(value, row, index) {
+        if(row.level !==null){
+            var subject = "";
+            for(var i=0; i<row.level; i++){
+                subject += "&nbsp;&nbsp;";
+            }
+            return subject + "|--"+value;
+        }
+        return value;
+    }
+    function tableActions(value, row,index)
+    {
+        return '<a href="JavaScript:showModal(\'' + row.id +'\','+
+            '\'' + row.subject +'\','+
+            '\'' + row.description +'\','+
+            '\'' + (row.parent ===null ? "" : row.parent.id)+'\','+
+            '\'' + (row.parent ===null ? "" : row.parent.subject) +'\','+
+            '\'' + (row.seqno ===null ? "" : row.seqno) +'\''+
+            ')"><i class="glyphicon glyphicon-pencil"></i></a>'
+    }
+
+    function showModal(id, subject, description, pid, psubject, seqno) {
+        $("#myModal").modal("show");
+
+        $("input[name='subject']").val(subject);
+        $("input[name='description']").val(description);
+        $("input[name='id']").val(id);
+        $("input[name='seqno']").val(seqno);
+
+        if(pid === "") {pid = -1; console.log(pid)}
+        if(psubject === "") {psubject = "根结点"; console.log(psubject)}
+
+        $("input[name='pid']").val(pid);
+        var $element = $("#parent"); // the element that Select2 is initialized on
+        var $option = $("<option selected></option>"); // the new base option
+        $option.val(pid); // set the id
+        $option.text(psubject); // set the text
+        $element.append($option); // add it to the list of selections
+        $element.trigger("change"); // tell Select2 to update
+
+    }
+
+    function stateFormatter(value, row, index) {
+        if(value == "0"){
+            return "启用"
+        }
+        else{
+            return "停用"
+        }
+    }
+
+    function rowStyle(row, index) {
+        if(row.is_deleted===1){
+            return {
+                classes: "danger"
+            };
+        }
+        return {};
+
+    }
+
+    function parentFormatter(value, row, index) {
+
+        if(row.parent === null){
+            return "根目录";
+        }
+        else {
+            return row.parent.subject;
+
+        }
+    }
+
+</script>
+{include file="../public/footer" }

@@ -1,57 +1,36 @@
-
-
-<!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <form action='{:Url("index/module/save")}' id="formSubmit">
+    <form action='{:Url("index/catalog/save")}' id="formSubmit">
         <div class="modal-dialog" role="document" id="modal-dialog">
             <div class="modal-content">
-                 <div class="modal-header box box-info">
-                <h5 class="modal-title" id="exampleModalLabel">模块管理</h5>
-            </div>
-            <!-- div class="alert alert-warning alert-dismissible" id="warning">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                <h4><i class="icon fa fa-warning"></i> Alert!</h4>
-                <div id="errorMessage"></div>
-            </div -->
+                <div class="modal-header box box-info">
+                    <h5 class="modal-title" id="exampleModalLabel">分类管理</h5>
+                </div>
 
                 <div class="modal-body">
                     <div class="form-group">
-                        <label class="control-label">上一级模块</label>
-                        <select class="form-control" style="width: 100%"  id="pmodule" name="pmodule"  >
-                         </select>
+                        <label class="control-label">上一级</label>
+                        <select class="form-control" style="width: 100%"  id="parent" name="parent"  >
+                        </select>
                         <input type="hidden" class="form-control" placeholder="" id="pid" name="pid"/>
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label">模块名称</label>
+                        <label class="control-label">分类</label>
                         <input type="text" class="form-control" placeholder="" id="txtUser" name="subject"/>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label">模块</label>
-                        <input type="text" class="form-control" placeholder="" id="txtModule" name="module"/>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">控制器</label>
-                        <input type="text" class="form-control" placeholder="" id="txtController" name="controller"/>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">行为</label>
-                        <input type="text" class="form-control" placeholder="" id="txtAction" name="action"/>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">图标</label>
-                        <input type="text" class="form-control" placeholder="" id="txtIcon" name="icon"/>
-                    </div>
                     <div class="form-group">
                         <label class="control-label">描述</label>
                         <input type="text" class="form-control" placeholder="" id="txtDescription" name="description"/>
                     </div>
 
+
                     <div class="form-group">
                         <label class="control-label">显示顺序</label>
                         <input type="text" class="form-control" placeholder="" id="txtSeqNo" name="seqno"/>
                     </div>
+
+
                 </div>
                 <div class="popover popover-top">
                     <h3 class="popover-title">Popover top</h3>
@@ -59,29 +38,28 @@
                         <p>Sed posuere consectetur est at lobortis. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum.</p>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <input type="checkbox" class="android-checkbox" name="isClosed" id="isClosed" />继续添加
-                <input type="hidden" value="" id="txtId" name="id"/>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" id="btnSave"
-                        data-container="body"
-                        data-toggle="popover"
-                        data-placement="top"
-                        data-content="出错了"
-                        data-html="true"
-                        data-trigger="focus">保存</button>
-            </div>
+                    <input type="hidden" value="" id="txtId" name="id"/>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="btnSave"
+                            data-container="body"
+                            data-toggle="popover"
+                            data-placement="top"
+                            data-content="出错了"
+                            data-html="true"
+                            data-trigger="focus">保存</button>
+                </div>
             </div>
         </div>
     </form>
 </div>
 <script type="text/javascript">
-    $("#pmodule").select2({
+    $("#parent").select2({
         dropdownParent: $('#myModal'),
         theme: "bootstrap",
-        ajax: {
-            url: SERVER_ROOT + "/index/module/getParent",
+        ajax:{
+            url: SERVER_ROOT + "/index/catalog/get2",
             dataType: 'json',
             delay: 250,
             data: function (params) {
@@ -99,7 +77,7 @@
                     }
                 };
             },
-           cache:true
+            cache:true
         },
         escapeMarkup:function (markup) {return markup;},
         minimumInputLength:1,
@@ -113,20 +91,19 @@
             return repo.subject || repo.text;
         },
         initSelection:function (element, callback) {
-          var data = {id:-1, text:"根结点"};
-          callback(data);
+            var data = {id:-1, text:"根结点"};
+            callback(data);
         },
-
-    })
+    });
 
     $("#btnSave").click(function () {
-
         $.ajax({
-            url:SERVER_ROOT + "index/module/save",
+            url:SERVER_ROOT + "index/catalog/save",
             type:"POST",
             data:getFormJson($("#formSubmit")),
             success:function (response) {
-                if(response !== true){
+                if(response !== true)
+                {
                     var msg = "";
                     for(var key in response){
                         msg += response[key] + "<br/>";
@@ -136,16 +113,18 @@
                     $("#btnSave").attr('title',"出错了");
                     $("#btnSave").popover('show');
                 }
-                else{
+                else
+                {
                     //继续添加
-                   if(!$("#isClosed").is(':checked')){
-                       $("#btnSave").popover("hide");
-                       $("#myModal").modal("hide");
-                   }
-                   $table.bootstrapTable("refresh");
+                    if(!$("#isClosed").is(':checked')){
+                        $("#btnSave").popover("hide");
+                        $("#myModal").modal("hide");
+                    }
+                    $table.bootstrapTable("refresh");
                 }
             }
         });
+
         return false;
     })
 </script>
