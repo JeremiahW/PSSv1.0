@@ -1,6 +1,6 @@
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <form action='{:Url("index/specification/save")}' id="formSubmit">
+    <form action='{:Url("index/specification/savetype")}' id="formSubmit">
         <div class="modal-dialog" role="document" id="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header box box-info">
@@ -40,7 +40,7 @@
 <script type="text/javascript">
     $("#btnSave").click(function () {
         $.ajax({
-            url:SERVER_ROOT + "index/specification/save",
+            url:SERVER_ROOT + "index/specification/savetype",
             type:"POST",
             data:getFormJson($("#formSubmit")),
             success:function (response) {
@@ -55,8 +55,11 @@
                     $("#btnSave").popover('show');
                 }
                 else {
-                    $("#btnSave").popover("hide");
-                    $("#myModal").modal("hide");
+                    //继续添加
+                    if (!$("#isClosed").is(':checked')){
+                        $("#btnSave").popover("hide");
+                        $("#myModal").modal("hide");
+                     }
 
                     $table.bootstrapTable("refresh");
                 }

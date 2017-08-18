@@ -10,6 +10,7 @@ namespace app\index\controller;
 
 
 use app\common\BaseController;
+use think\Db;
 use think\Loader;
 use think\Request;
 
@@ -36,6 +37,41 @@ class Specification extends BaseController
         return $this->fetch(":type");
     }
 
+    function gettype()
+    {
+        $term = Request::instance()->param("q");
+        $page = Request::instance()->param("page");
+
+        $condition['id'] = array('<>', "null");
+        if(!empty($term)){
+            $condition['subject'] = array('like', "%$term%");
+        }
+
+
+        $offset = Request::instance()->param("offset");
+        $pageSize = Request::instance()->param("limit");
+        $resultSet = $this->model->GetType($page, $offset, $pageSize,$condition);
+        return json(["total"=>$resultSet["count"], "rows"=>$resultSet["rows"]]);
+    }
+
+    function savetype()
+    {
+        if(Request::instance()->isPost()){
+            $id = Request::instance()->param("id");
+            $subject = Request::instance()->param("subject");
+
+            $m = Loader::model("Specification", "logic");
+
+            $result = $m->SaveType($id, $subject);
+        }
+        else
+        {
+            $result = false;
+        }
+
+        return json($result);
+    }
+
     function get()
     {
         $offset = Request::instance()->param("offset");
@@ -49,10 +85,13 @@ class Specification extends BaseController
         if(Request::instance()->isPost()){
             $id = Request::instance()->param("id");
             $subject = Request::instance()->param("subject");
+            $description = Request::instance()->param("description");
+            $code = Request::instance()->param("code");
+            $typeId = Request::instance()->param("tid");
 
             $m = Loader::model("Specification", "logic");
 
-            $result = $m->Save($id, $subject);
+            $result = $m->Save($id, $code, $subject,$description, $typeId);
         }
         else
         {

@@ -35,10 +35,117 @@
                             <button type="button" class="btn btn-primary" id="btnActive"><li class="glyphicon glyphicon-ok"></li></button>
                         </div>
                     </div>
-
+                    <table id="table"
+                           data-pagination="true"
+                           data-side-pagination="server"
+                           data-click-to-select="true"
+                           data-page-number="1"
+                           data-page-size="{$pageSize}"
+                           data-row-style="rowStyle"
+                           data-url="{$serverRoot}/index/specification/get">
+                        <thead>
+                        <tr>
+                            <th data-field="state" data-checkbox="true" ></th>
+                            <th data-field="id">Id</th>
+                            <th data-formatter="typeFormatter">所属分类</th>
+                            <th data-field="code">规格编码</th>
+                            <th data-field="subject">规格</th>
+                            <th data-field="description">描述</th>
+                            <th data-field="create_time" data-formatter="getLocalTime">创建日期</th>
+                            <th data-field="update_time" data-formatter="getLocalTime">修改日期</th>
+                            <th data-field="is_deleted" data-formatter="stateFormatter">状态</th>
+                            <th data-formatter="tableActions">Action</th>
+                        </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>
     </section>
 </div>
+{include file="_specificationform"}
+<script type="text/javascript">
+    var $table= $('#table').bootstrapTable();
+
+    function showModal(id, subject,code, description, tid, tsubject) {
+        $("#myModal").modal("show");
+        $("input[name='subject']").val(subject);
+        $("input[name='id']").val(id);
+        $("input[name='code']").val(code);
+        $("input[name='description']").val(description);
+
+
+        if(tid === "") {tid = -1; console.log(pid)}
+        if(tsubject === "") {tsubject = "根结点"; console.log(tsubject)}
+        $("input[name='tid']").val(tid);
+        var $element = $("#cmbType"); // the element that Select2 is initialized on
+        var $option = $("<option selected></option>"); // the new base option
+        $option.val(tid); // set the id
+        $option.text(tsubject); // set the text
+        $element.append($option); // add it to the list of selections
+        $element.trigger("change"); // tell Select2 to update
+    }
+
+    $("#btnAdd").click(function () {
+        showModal("", "");
+    })
+
+    function stateFormatter(value, row, index) {
+        if(value == "0"){
+            return "启用"
+        }
+        else{
+            return "停用"
+        }
+
+        /*
+        if (index === 2) {
+            return {
+                disabled: true
+            };
+        }
+        if (index === 5) {
+            return {
+                disabled: true,
+                checked: true
+            }
+        }
+        */
+    }
+
+    function rowStyle(row, index) {
+        //  var classes = ['active', 'success', 'info', 'warning', 'danger'];
+
+        console.log(row.is_deleted);
+        if(row.is_deleted===1){
+            return {
+                classes: "danger"
+            };
+        }
+        return {};
+
+    }
+
+    function tableActions(value, row, index) {
+
+        return '<a href=javascript:showModal('+row.id+
+            ',\''+ encodeURI(row.subject) +'\''+
+            ',\''+ encodeURI(row.code) + '\''+
+            ',\''+ encodeURI(row.description) +'\''+
+            ',\'' + (row.type ===null ? "" : row.type.id)+'\''+
+            ',\'' + (row.type ===null ? "" : row.type.subject) +
+            '\')'+' title="修改">' +
+            '<i class="glyphicon glyphicon-pencil"></i></a>';
+    }
+    
+    function typeFormatter(value, row, index) {
+        if(row.parent === null){
+            return "没有类型";
+        }
+        else {
+            return row.type.subject;
+
+        }
+    }
+</script>
 {include file="../public/footer" }

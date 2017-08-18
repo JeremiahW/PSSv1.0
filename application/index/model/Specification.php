@@ -13,5 +13,8 @@ use think\Model;
 
 class Specification extends Model
 {
-
+    public function type()
+    {
+        return $this->belongsTo("SpecificationType", "type_id", "id")->field("id, subject");
+    }
 }
