@@ -16,20 +16,21 @@ use think\Request;
 
 class Product extends BaseController
 {
-    private $specificationType;
-    private $specification;
+    //private $specificationType;
+   // private $specification;
 
     function __construct(Request $request = null)
     {
         parent::__construct($request);
 
-        $this->specificationType = Loader::model("SpecificationType");
-        $this->specification = Loader::model("Specification");
+      //  $this->specificationType = Loader::model("SpecificationType");
+      //  $this->specification = Loader::model("Specification", "logic");
     }
 
     function index()
     {
-        $types = $this->specificationType->select();
+        $model = Loader::model("specificationType");
+        $types = $model->select();
         $this->assign("types", $types);
         return $this->fetch(":index");
     }
@@ -77,4 +78,19 @@ class Product extends BaseController
         }
     }
 
+    function get()
+    {
+        $model = Loader::model("Product", "logic");
+
+        $condition['id'] = array('<>', "null");
+
+        $term = Request::instance()->param("q");
+        $page = Request::instance()->param("page");
+
+        $offset = Request::instance()->param("offset");
+        $pageSize = Request::instance()->param("limit");
+        $resultSet = $model->Get($page, $offset, $pageSize, $condition);
+
+        return json(["total"=>$resultSet["count"], "rows"=>$resultSet["rows"]]);
+    }
 }

@@ -13,5 +13,19 @@ use think\Model;
 
 class Product extends Model
 {
+    public function catalog()
+    {
+        return $this->belongsTo("Catalog","catalog_id","id")->field("id, subject");
+    }
 
+    public function supplier()
+    {
+        return $this->belongsTo("Supplier","supplier_id","id")->field("id, company");
+
+    }
+
+    public function specifications()
+    {
+         return $this->hasMany("ProductSpecification","product_id","id")->field("product_id,specification_id,specification");
+    }
 }

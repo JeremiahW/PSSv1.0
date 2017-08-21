@@ -24,9 +24,7 @@ class Product extends BaseModel
         parent::__construct($data);
 
         $this->product = Loader::model("Product");
-      $this->productSpec = Loader::model("ProductSpecification");
-
-
+        $this->productSpec = Loader::model("ProductSpecification");
     }
 
     public function Save($product, $specifications)
@@ -44,7 +42,7 @@ class Product extends BaseModel
             //$rows = json_decode($specifications);
             foreach ($specifications as $row)
             {
-                array_push($data, ["specification_id"=>$row["id"], "product_id"=>$id]);
+                array_push($data, ["specification_id"=>$row["id"], "product_id"=>$id, "specification"=>$row["specification"]]);
             }
             $this->productSpec->saveAll($data);
             Db::commit();
@@ -93,5 +91,24 @@ class Product extends BaseModel
         }
 
         return $result;
+    }
+
+    public function Get($page, $offset = -1, $pageSize=-1, $condition=[])
+    {
+        if($pageSize==-1){
+            $pageSize = config('paginate.list_rows');
+        }
+
+        if($offset==-1){
+            $page = 0;
+            $offset = $page *  $pageSize;
+        }
+
+
+        $model = Loader::model("Product");
+
+        $count = $model->with("catalog,supplier,specifications")->where($condition)->count();
+        $rows = $model->with("catalog,supplier,specifications")->where($condition)->limit($offset, $pageSize)->select();
+        return ["rows"=>$rows, "count"=>$count];
     }
 }
