@@ -20,7 +20,7 @@ class Supplier extends BaseModel
         parent::__construct($data);
     }
 
-    public function Get($page, $offset=-1, $pageSize = -1)
+    public function Get($page, $offset=-1, $pageSize = -1, $condition=[])
     {
         if($pageSize==-1){
             $pageSize = config('paginate.list_rows');
@@ -32,8 +32,8 @@ class Supplier extends BaseModel
         }
 
 
-        $count = Db::table($this->prefix."supplier")->count();
-        $rows = Db::table($this->prefix."supplier")->limit($offset, $pageSize)->select();
+        $count = Db::table($this->prefix."supplier")->where($condition)->count();
+        $rows = Db::table($this->prefix."supplier")->where($condition)->limit($offset, $pageSize)->select();
         return ["rows"=>$rows, "count"=>$count];
     }
 

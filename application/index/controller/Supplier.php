@@ -31,9 +31,18 @@ class Supplier extends BaseController
     function get(){
         // pageSize, pageNumber, searchText, sortName, sortOrder.
 
+        $term = Request::instance()->param("q");
+        $page = Request::instance()->param("page");
+
+        $condition['id'] = array('<>', "null");
+        if(!empty($term)){
+            $condition['company'] = array('like', "%$term%");
+        }
+
+
         $offset = Request::instance()->param("offset");
         $pageSize = Request::instance()->param("limit");
-        $resultSet = $this->model->Get(-1, $offset, $pageSize);
+        $resultSet = $this->model->Get($page, $offset, $pageSize, $condition);
         return json(["total"=>$resultSet["count"], "rows"=>$resultSet["rows"]]);
     }
 

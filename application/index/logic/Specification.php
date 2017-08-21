@@ -42,7 +42,7 @@ class Specification extends BaseModel
         return ["rows"=>$rows, "count"=>$count];
     }
 
-    public function Get($page, $offset=-1, $pageSize = -1)
+    public function Get($page, $offset=-1, $pageSize = -1, $condition=[])
     {
         if($pageSize==-1){
             $pageSize = config('paginate.list_rows');
@@ -56,8 +56,8 @@ class Specification extends BaseModel
 
         $model = Loader::model("Specification");
 
-        $count =  $model->with("type")->count();
-        $rows = $model->with("type")->limit($offset, $pageSize)->select();
+        $count =  $model->with("type")->where($condition)->count();
+        $rows = $model->with("type")->where($condition)->limit($offset, $pageSize)->select();
         return ["rows"=>$rows, "count"=>$count];
     }
 

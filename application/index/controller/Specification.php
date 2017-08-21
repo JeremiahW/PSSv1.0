@@ -74,9 +74,19 @@ class Specification extends BaseController
 
     function get()
     {
+        $condition['id'] = array('<>', "null");
+
         $offset = Request::instance()->param("offset");
         $pageSize = Request::instance()->param("limit");
-        $resultSet = $this->model->Get(-1, $offset, $pageSize);
+
+        $typeId = Request::instance()->post("typeId");
+
+        //$typeId = Request::instance()->param("typeId");
+        if(!empty($typeId)){
+            $condition['type_id'] = array('=', "$typeId");
+        }
+
+        $resultSet = $this->model->Get(-1, $offset, $pageSize, $condition);
         return json(["total"=>$resultSet["count"], "rows"=>$resultSet["rows"]]);
     }
 
