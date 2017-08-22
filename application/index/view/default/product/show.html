@@ -45,13 +45,18 @@
                         <tr >
                             <th data-field="state" data-checkbox="true" ></th>
                             <th data-field="id">ID</th>
-                            <th data-field="company">名称</th>
-                            <th data-field="address">地址</th>
-                            <th data-field="logo" data-formatter="imageFormatter">Logo</th>
+                            <th data-formatter="catalogFormatter">分类</th>
+                            <th data-formatter="supplierFormatter">供应商</th>
+                            <th data-field="code">产品编码</th>
+                            <th data-field="subject">产品名称</th>
+                            <th data-field="sku">SKU</th>
+                            <th data-field="spu">SPU</th>
+                            <th data-field="unit_price">单价</th>
+                            <th data-field="amount">库存数量</th>
+                            <th data-field="warning_amount">预警数量</th>
                             <th data-field="description">描述</th>
                             <th data-field="create_time" data-formatter="getLocalTime">创建日期</th>
                             <th data-field="update_time" data-formatter="getLocalTime">修改日期</th>
-                            <th data-field="is_deleted" data-formatter="stateFormatter">状态</th>
                             <th data-formatter="tableActions">Action</th>
                         </tr>
 
@@ -64,4 +69,80 @@
 
     </section>
 </div>
+<script type="text/javascript">
+
+    var $table= $('#table').bootstrapTable({
+        detailView: true,
+        onExpandRow:function (index, row, $detail) {
+           $detail.html("<table></table>").find("table").bootstrapTable(({
+               url:"#",
+               columns:[
+                   {field:"id", title:"ID"}
+                   ,{field:"code", title:"编码"}
+                   ,{field:"subject", title:"规格"}
+                   ,{formatter:specTypeFormatter, title:"规格"}
+               ],
+               data:row.specifications
+           }));
+        }
+
+    });
+
+    function specTypeFormatter(value, row, index)
+    {
+        if(row.catalog === null){
+            return "没有类型";
+        }
+        else {
+            return row.type.subject;
+
+        }
+    }
+    function rowStyle(row, index) {
+        //  var classes = ['active', 'success', 'info', 'warning', 'danger'];
+
+        if(row.amount <= row.warning_amount){
+            return {
+                classes: "danger"
+            };
+        }
+        return {};
+
+    }
+
+    function stateFormatter(value, row, index) {
+        if(value == "0"){
+            return "启用"
+        }
+        else{
+            return "停用"
+        }
+    }
+
+    function tableActions(value, row, index) {
+
+        return '<a href=\''+  SERVER_ROOT + "index/product/index/id/"+ row.id + '\' title="修改">' +
+            '<i class="glyphicon glyphicon-pencil"></i></a>';
+    }
+
+    function catalogFormatter(value, row, index) {
+        if(row.catalog === null){
+            return "没有类型";
+        }
+        else {
+            return row.catalog.subject;
+
+        }
+    }
+
+    function supplierFormatter(value, row, index) {
+        if(row.supplier === null){
+            return "没有类型";
+        }
+        else {
+            return row.supplier.company;
+
+        }
+    }
+</script>
 {include file="../public/footer" }

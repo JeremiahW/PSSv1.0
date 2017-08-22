@@ -29,10 +29,31 @@ class Product extends BaseController
 
     function index()
     {
+        $id = Request::instance()->param("id");
+
+
         $model = Loader::model("specificationType");
         $types = $model->select();
         $this->assign("types", $types);
+        $this->assign("id", $id);
         return $this->fetch(":index");
+    }
+
+    function getrow()
+    {
+        $id = Request::instance()->param("id");
+
+        if(!empty($id))
+        {
+            $model = Loader::model("Product", "logic");
+            $row = $model->GetRow($id);
+            if($row != null)
+            {
+                return json(["row"=>$row]);
+            }
+
+        }
+        return json(false);
     }
 
     function show()
@@ -58,6 +79,7 @@ class Product extends BaseController
                 "subject" => $form["subject"],
                 "unit_price" => $form["unit_price"],
                 "warning_amount" => $form["warning_amount"],
+                "description"=>$form["description"],
                 "id"=>$form["id"],
             ];
 
@@ -68,7 +90,7 @@ class Product extends BaseController
             }
             else
             {
-                $result = $model->Save($product, $rows, $form["id"]);
+                $result = $model->Update($product, $rows, $form["id"]);
             }
             return json($result);
         }
@@ -82,7 +104,8 @@ class Product extends BaseController
     {
         $model = Loader::model("Product", "logic");
 
-        $condition['id'] = array('<>', "null");
+        //过滤掉已经删除的
+        $condition['is_deleted'] = array('<>', "1");
 
         $term = Request::instance()->param("q");
         $page = Request::instance()->param("page");

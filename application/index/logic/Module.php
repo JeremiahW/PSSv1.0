@@ -86,14 +86,14 @@ class Module extends BaseModel
         $offset = ($page-1) * $pageSize;
 
         $count =  $this->module->with("parent")->where($condition)->count();
-        $rows =  $this->module->with("parent")->where($condition)->limit($offset, $pageSize)->select();
+        $rows =  $this->module->with("parent")->where($condition)->limit($offset, $pageSize)->order(["seqno"=>"desc"])->select();
 
         return ["rows"=>$rows, "count"=>$count];
     }
 
     public function GetForMenu(){
        // $rows = Db::table($this->prefix."module")->with("parent, children")->select();
-         $rows = $this->module->with("parent,children")->where(["parent_id"=>-1,"is_deleted"=>0])->select();
+         $rows = $this->module->with("parent,children")->where(["parent_id"=>-1,"is_deleted"=>0])->order(["seqno"=>"desc"])->select();
         return $rows;
     }
 
@@ -119,8 +119,9 @@ class Module extends BaseModel
     }
 
     protected function GetParents(){
-        $rows = $this->module->with("parent")->where("parent_id=-1")->select();
+        $rows = $this->module->with("parent")->where("parent_id=-1")->order(["seqno"=>"desc"])->select();
         $this->resultSet = [];
+
 
         for( $i=0;$i<sizeof($rows);$i++){
             $id = $rows[$i]->id;
@@ -133,7 +134,7 @@ class Module extends BaseModel
     }
 
     protected function GetChildren($pid, $level){
-        $rows = $this->module->with("parent")->where("parent_id=".$pid)->select();
+        $rows = $this->module->with("parent")->where("parent_id=".$pid)->order(["seqno"=>"desc"])->select();
         $level++;
         if(sizeof($rows)==0) return;
         for ($i=0; $i<sizeof($rows);$i++){

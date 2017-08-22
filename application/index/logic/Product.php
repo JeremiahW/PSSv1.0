@@ -29,14 +29,18 @@ class Product extends BaseModel
 
     public function Save($product, $specifications)
     {
+        $validate = Loader::validate("Product");
+        $result = $validate->batch()->check($product);
+        if($result !== true)
+            return $validate->getError();
+
         Db::startTrans();
-        $result = true;
+
         try
         {
            // $id =$this->product->insertGetId($product);
             $this->product->save($product);
             $id = $this->product->getLastInsID();
-
 
             $data = array();
             //$rows = json_decode($specifications);
@@ -65,8 +69,13 @@ class Product extends BaseModel
 
     public function Update($product, $specifications, $id)
     {
+        $validate = Loader::validate("Product");
+        $result = $validate->batch()->check($product);
+        if($result !== true)
+            return $validate->getError();
+
         Db::startTrans();
-        $result = true;
+
         try
         {
             // $id =$this->product->insertGetId($product);
@@ -107,8 +116,25 @@ class Product extends BaseModel
 
         $model = Loader::model("Product");
 
-        $count = $model->with("catalog,supplier,specifications")->where($condition)->count();
-        $rows = $model->with("catalog,supplier,specifications")->where($condition)->limit($offset, $pageSize)->select();
+        $count = $model->with("catalog,supplier,specifications,specifications.type")->where($condition)->count();
+        $rows = $model->with("catalog,supplier,specifications,specifications.type")->where($condition)->limit($offset, $pageSize)->select();
         return ["rows"=>$rows, "count"=>$count];
+    }
+
+    public function GetRow($id)
+    {
+        $model = Loader::model("Product");
+       // $model = new \app\index\model\Product();
+        $condition['id'] = array('=', $id);
+
+        $rows = $model->with("catalog,supplier,specifications,specifications.type")->where($condition)->select();
+        if(sizeof($rows)>0)
+        {
+            return $rows[0];
+        }
+        else
+        {
+            return null;
+        }
     }
 }
