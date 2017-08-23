@@ -1,10 +1,10 @@
-{include file="../public/header" }
-<style type="text/css" href="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.css"></style>
-<script src="__ROOT__/js/jquery-3.2.1.min.js"></script>
-<script src="__ROOT__/tether-master/dist/js/tether.min.js"></script>
-<script src="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.js"></script>
-<script src="__ROOT__/js/pss-utils.js"></script>
- <div class="content-wrapper">
+{extend name="../public/master" /}
+{block name="topReferences"}{/block}
+
+
+
+{block name="mainContent"}
+    <div class="content-wrapper">
     <section class="content-header">
         <h1>
             用户管理
@@ -61,8 +61,16 @@
         </div>
     </section>
 </div>
-{include file="_form"}
-<script type="application/javascript">
+    {include file="_form"}
+{/block}
+
+{block name="bottomReferences"}
+    <style type="text/css" href="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.css"></style>
+     <script src="__ROOT__/tether-master/dist/js/tether.min.js"></script>
+    <script src="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.js"></script>
+    <script src="__ROOT__/js/pss-utils.js"></script>
+
+    <script type="text/javascript">
 
 
     var $table= $('#table').bootstrapTable();
@@ -207,4 +215,4 @@
         $("#btnSave").popover('show');
     }
 </script>
-{include file="../public/footer" }
+{/block}

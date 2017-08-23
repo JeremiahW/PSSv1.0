@@ -35,7 +35,7 @@ class Client extends BaseController
 
         $condition['id'] = array('<>', "null");
         if(!empty($term)){
-            $condition['company'] = array('like', "%$term%");
+            $condition['name'] = array('like', "%$term%");
         }
 
         $model = Loader::model("Client", "logic");
@@ -58,12 +58,12 @@ class Client extends BaseController
             $id = Request::instance()->param("id");
 
             $client = [
-              "name"=>$name,
-              "phone"=>$phone,
-              "address"=>$phone,
+                "name"=>$name,
+                "phone"=>$phone,
+                "address"=>$phone,
                 "email"=>$email,
-              "description"=>$description,
-              "shenfenzheng"=>$shenfenzheng
+                "description"=>$description,
+                "shenfenzheng"=>$shenfenzheng
             ];
 
             $m = Loader::model("Client","logic");

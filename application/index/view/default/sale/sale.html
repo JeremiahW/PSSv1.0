@@ -1,0 +1,267 @@
+{extend name="../public/master" /}
+
+{block name="topReferences"}{/block}
+
+
+{block name="mainContent"}
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>
+                销售订单
+                <small>添加销售订单</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li class="active">Dashboard</li>
+            </ol>
+        </section>
+        <section class="content">
+            <div class="row">
+
+                <!-- left column -->
+                <div class="col-md-12">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">添加销售订单</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <select id="selectClient" name="selectClient" class="form-control">
+                                    </select>
+                                    <input type="hidden" value="" name="cid" id="cid" />
+                                </div>
+                                <div class="col-md-6">
+                                    <select id="selectProduct" name="selectProduct" class="form-control">
+                                    </select>
+                                    <input type="hidden" value="" name="prodId" id="prodId" />
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="row">
+
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        <input type="number" value="" name="txtNum" id="txtNum" class="form-control" placeholder="采购数量"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        <input type="text" value="" name="txtStorage" id="txtStorage" class="form-control" placeholder="库存余量" readonly/>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        <input type="text" value="" name="txtUnitPrice" id="txtUnitPrice" class="form-control" placeholder="单价" readonly/>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        <input type="number" value="" name="txtTotalAmt" id="txtTotalAmt" class="form-control" placeholder="总价"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <input type="number" value="" name="txtActAmt" id="txtActAmt" class="form-control" placeholder="实收价格"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-primary" id="btnAdd"><li class="glyphicon glyphicon-plus"></li></button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table id="table" >
+                                        <thead>
+                                            <tr>
+                                                <th data-field="id">ID</th>
+                                                <th data-field="code">产品编码</th>
+                                                <th data-field="subject">产品名称</th>
+                                                <th data-field="unit_price">单价</th>
+                                                <th data-field="number" data-editable="true">数量</th>
+                                                <th data-field="totalAmt">总价</th>
+                                                <th data-field="actAmt" data-editable="true"> 实收价格</th>
+                                                <th data-formatter="tableActions">操作</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="box-footer">
+                            <button class="btn btn-primary" id="btnSave">保存销售订单</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{/block}
+
+{block name="bottomReferences"}
+    <style type="text/css" href="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.css"></style>
+    <script src="__ROOT__/js/jquery-3.2.1.min.js"></script>
+    <script src="__ROOT__/tether-master/dist/js/tether.min.js"></script>
+    <script src="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.js"></script>
+
+    <script src="__ROOT__/bootstrap-table-1.11.1/dist/extensions/editable/bootstrap-table-editable.js"></script>
+    <script src="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/js/bootstrap-editable.js"></script>
+    <link rel="stylesheet" href="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css">
+
+    <script src="__ROOT__/js/pss-utils.js"></script>
+
+    <script src="__ROOT__/select2-4.0.3/dist/js/select2.full.js"></script>
+    <link rel="stylesheet" href="__ROOT__/select2-4.0.3/dist/css/select2.css">
+    <link rel="stylesheet" href="__ROOT__/select2-4.0.3/dist/css/select2-bootstrap.css">
+    <script type="text/javascript">
+        var products = [];
+        var currentProduct;
+
+
+        var $table = $("#table").bootstrapTable({data:products, url:"#"});
+        $.fn.editable.defaults.mode = 'inline';
+
+        function tableActions(value, row, index) {
+            return '<a href=JavaScript:deleteProd(' + row.id +
+                ')><i class="glyphicon glyphicon-trash"></i></a>';
+        }
+        function deleteProd(id) {
+            for(var i=0;i < products.length;i++) {
+                var row = products[i];
+                if (row.id == id) {
+                    products.splice(i, 1);
+                    $table.bootstrapTable("load",{data:products,silent: true});
+                    break;
+                }
+            }
+        }
+
+        function isProdExisted(id) {
+            var result = false;
+            for(var i=0;i < products.length;i++) {
+                var row = products[i];
+                if (row.id == id) {
+                    result = true;
+                    break;
+                }
+            }
+            return result;
+        }
+
+        $("#btnSave").click(function () {
+            console.log(products);
+        })
+
+        $("#btnAdd").click(function () {
+            if(currentProduct.id !== -1) {
+                if (!isProdExisted(currentProduct.id)) {
+                    products.push(
+                        {
+                            "id": currentProduct.id,
+                            "code": currentProduct.code,
+                            "subject": currentProduct.subject,
+                            "unit_price": currentProduct.unit_price,
+                            "number": $("#txtNum").val(),
+                            "totalAmt": $("#txtTotalAmt").val(),
+                            "actAmt": $("#txtActAmt").val(),
+                        }
+                    )
+                    $table.bootstrapTable("load", {data: products});
+                }
+
+            }
+        });
+
+
+
+        $("#selectClient").select2({
+            theme: "bootstrap",
+            ajax: {
+                url: SERVER_ROOT + "/index/client/get",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term,
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.rows,
+                        pagination: {
+                            more: (params.page * 20) < data.total
+                        }
+                    };
+                },
+                cache:true
+            },
+            escapeMarkup:function (markup) {return markup;},
+            minimumInputLength:1,
+            templateResult:function (repo) {
+                if (repo.loading) return repo.text;
+                return repo.name;
+            },
+            templateSelection:function (repo) {
+                $("#cid").val(repo.id);
+                return repo.name || repo.text;
+            },
+            initSelection:function (element, callback) {
+                var data = {id:-1, text:"请选择客户"};
+                callback(data);
+            },
+
+        });
+
+        $("#selectProduct").select2({
+            theme: "bootstrap",
+            ajax: {
+                url: SERVER_ROOT + "/index/product/get",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term,
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.rows,
+                        pagination: {
+                            more: (params.page * 20) < data.total
+                        }
+                    };
+                },
+                cache:true
+            },
+            escapeMarkup:function (markup) {return markup;},
+            minimumInputLength:1,
+            templateResult:function (repo) {
+                if (repo.loading) return repo.text;
+                return repo.subject;
+            },
+            templateSelection:function (repo) {
+                currentProduct = repo;
+
+                $("#prodId").val(repo.id);
+                $("#txtStorage").val(repo.amount);
+                $("#txtUnitPrice").val(repo.unit_price);
+
+                return repo.subject || repo.text;
+            },
+            initSelection:function (element, callback) {
+                var data = {id:-1, text:"选择产品"};
+                callback(data);
+            },
+
+        })
+    </script>
+
+{/block}

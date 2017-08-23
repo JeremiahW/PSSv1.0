@@ -104,11 +104,16 @@ class Product extends BaseController
     {
         $model = Loader::model("Product", "logic");
 
-        //过滤掉已经删除的
-        $condition['is_deleted'] = array('<>', "1");
+
 
         $term = Request::instance()->param("q");
         $page = Request::instance()->param("page");
+
+        //过滤掉已经删除的
+        $condition['is_deleted'] = array('<>', "1");
+        if(!empty($term)){
+            $condition['subject'] = array('like', "%$term%");
+        }
 
         $offset = Request::instance()->param("offset");
         $pageSize = Request::instance()->param("limit");

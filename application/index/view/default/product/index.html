@@ -1,395 +1,401 @@
-{include file="../public/header" }
-<script src="__ROOT__/js/jquery-3.2.1.min.js"></script>
-<script src="__ROOT__/tether-master/dist/js/tether.min.js"></script>
-<script src="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.js"></script>
-<style type="text/css" href="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.css"></style>
+{extend name="../public/master" /}
+{block name="topReferences"}{/block}
 
-<script src="__ROOT__/js/pss-utils.js"></script>
 
-<script src="__ROOT__/select2-4.0.3/dist/js/select2.full.js"></script>
-<link rel="stylesheet" href="__ROOT__/select2-4.0.3/dist/css/select2.css">
-<link rel="stylesheet" href="__ROOT__/select2-4.0.3/dist/css/select2-bootstrap.css">
+{block name="mainContent"}
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>
+                添加产品
+                <small>请添加产品信息及对应的规格</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li class="active">Dashboard</li>
+            </ol>
+        </section>
+        <form action='{:Url("index/product/save")}' id="formSubmit">
 
-<div class="content-wrapper">
-    <section class="content-header">
-        <h1>
-            添加产品
-            <small>请添加产品信息及对应的规格</small>
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="active">Dashboard</li>
-        </ol>
-    </section>
-    <form action='{:Url("index/product/save")}' id="formSubmit">
-
-        <section class="content">
-            <div class="box box-primary">
-                <div class="row">
-                <!-- left column -->
-                <div class="col-md-6">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">产品信息</h3>
-                        </div>
-                        <div class="box-body">
-                            <div class="form-group">
-                                <label class="control-label">产品分类</label>
-                                <select name="selectCatalog" id="selectCatalog" class="form-control">
-
-                                </select>
-                                <input type="hidden" name="catId" id="catId"/>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="control-label">产品编码</label>
-                                <input type="text" class="form-control" placeholder="" id="txtCode" name="code"/>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label">产品名称</label>
-                                <input type="text" class="form-control" placeholder="" id="txtSubject" name="subject"/>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label">SKU</label>
-                                <input type="text" class="form-control" placeholder="" id="txtSKU" name="sku"/>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label">SPU</label>
-                                <input type="text" class="form-control" placeholder="" id="txtSPU" name="spu"/>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label">单价</label>
-                                <input type="number" class="form-control" placeholder="" id="txtUnitPrice" name="unit_price"/>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label">预警库存</label>
-                                <input type="number" class="form-control" placeholder="" id="txtWarnAmt" name="warning_amount"/>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="control-label">供应商</label>
-                                <select name="selectSupplier" id="selectSupplier" class="form-control">
-                                </select>
-                                <input type="hidden" name="supplierId" id="supplierId" />
-                            </div>
-
-                            <div class="form-group">
-                                <label class="control-label">备注</label>
-                                <input type="text" class="form-control" placeholder="" id="txtDescription" name="description"/>
-                            </div>
-
-                        </div>
-
-                </div>
-                <!-- left column -->
-                <div class="col-md-6">
-
-                        <div class="box-header with-border">
-                            <h3 class="box-title">产品规格信息</h3>
-                        </div>
-                        <div class="box-body">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <select class="form-control" name="specificationType" id="specificationType">
-                                            <option value="-1">请选择类型</option>
-                                            {volist name="types" id="t"}
-                                            <option value='{$t.id}'>{$t.subject}</option>
-                                            {/volist}
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <select class="form-control" name="specification" id="specification">
-                                            <option value="-1">请选择规格</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <button type="button" class="btn btn-primary" id="btnAdd"><li class="glyphicon glyphicon-plus"></li></button>
-                                    </div>
-                                </div>
-                                <table id="tblSpec">
-                                    <thead>
-                                        <tr>
-                                            <th data-field="id">ID</th>
-                                            <th data-field="type">规格类型</th>
-                                            <th data-field="specification">规格</th>
-                                            <th data-formatter="tableActions">Action</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            <hr/>
-                        </div>
-
-                </div>
-            </div>
-            </div>
-            <div class="popover popover-top">
-                <h3 class="popover-title">Popover top</h3>
-                <div class="popover-content">
-                    <p>Sed posuere consectetur est at lobortis. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum.</p>
-                </div>
-            </div>
-            <div class="box box-primary">
-                <div class="box-body">
+            <section class="content">
+                <div class="box box-primary">
                     <div class="row">
-                            <div class="col-md-11">&nbsp;</div>
-                            <div class="col-md-1">
-                                <input type="hidden" name="id" id="id" value="{$id}"/>
-                                <button type="button" class="btn btn-primary" id="btnSave"
-                                        data-container="body"
-                                        data-toggle="popover"
-                                        data-placement="top"
-                                        data-content="出错了"
-                                        data-html="true"
-                                        data-trigger="focus">保存产品</button>
+                    <!-- left column -->
+                    <div class="col-md-6">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">产品信息</h3>
                             </div>
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="control-label">产品分类</label>
+                                    <select name="selectCatalog" id="selectCatalog" class="form-control">
+
+                                    </select>
+                                    <input type="hidden" name="catId" id="catId"/>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label">产品编码</label>
+                                    <input type="text" class="form-control" placeholder="" id="txtCode" name="code"/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">产品名称</label>
+                                    <input type="text" class="form-control" placeholder="" id="txtSubject" name="subject"/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">SKU</label>
+                                    <input type="text" class="form-control" placeholder="" id="txtSKU" name="sku"/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">SPU</label>
+                                    <input type="text" class="form-control" placeholder="" id="txtSPU" name="spu"/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">单价</label>
+                                    <input type="number" class="form-control" placeholder="" id="txtUnitPrice" name="unit_price"/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">预警库存</label>
+                                    <input type="number" class="form-control" placeholder="" id="txtWarnAmt" name="warning_amount"/>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label">供应商</label>
+                                    <select name="selectSupplier" id="selectSupplier" class="form-control">
+                                    </select>
+                                    <input type="hidden" name="supplierId" id="supplierId" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label">备注</label>
+                                    <input type="text" class="form-control" placeholder="" id="txtDescription" name="description"/>
+                                </div>
+
+                            </div>
+
+                    </div>
+                    <!-- left column -->
+                    <div class="col-md-6">
+
+                            <div class="box-header with-border">
+                                <h3 class="box-title">产品规格信息</h3>
+                            </div>
+                            <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <select class="form-control" name="specificationType" id="specificationType">
+                                                <option value="-1">请选择类型</option>
+                                                {volist name="types" id="t"}
+                                                <option value='{$t.id}'>{$t.subject}</option>
+                                                {/volist}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <select class="form-control" name="specification" id="specification">
+                                                <option value="-1">请选择规格</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button type="button" class="btn btn-primary" id="btnAdd"><li class="glyphicon glyphicon-plus"></li></button>
+                                        </div>
+                                    </div>
+                                    <table id="tblSpec">
+                                        <thead>
+                                            <tr>
+                                                <th data-field="id">ID</th>
+                                                <th data-field="type">规格类型</th>
+                                                <th data-field="specification">规格</th>
+                                                <th data-formatter="tableActions">Action</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                <hr/>
+                            </div>
+
                     </div>
                 </div>
-            </div>
-        </section>
-    </form>
-</div>
-<script type="text/javascript">
+                </div>
+                <div class="popover popover-top">
+                    <h3 class="popover-title">Popover top</h3>
+                    <div class="popover-content">
+                        <p>Sed posuere consectetur est at lobortis. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum.</p>
+                    </div>
+                </div>
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <div class="row">
+                                <div class="col-md-11">&nbsp;</div>
+                                <div class="col-md-1">
+                                    <input type="hidden" name="id" id="id" value="{$id}"/>
+                                    <button type="button" class="btn btn-primary" id="btnSave"
+                                            data-container="body"
+                                            data-toggle="popover"
+                                            data-placement="top"
+                                            data-content="出错了"
+                                            data-html="true"
+                                            data-trigger="focus">保存产品</button>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </form>
+    </div>
+{/block}
 
-    var $specificationType =  $("#specificationType");
-    var $specification =  $("#specification");
-    var $btnAdd = $("#btnAdd");
-    var rows = [];
-    var $table = $("#tblSpec").bootstrapTable({data:rows, url:"#"});
+{block name="bottomReferences"}
+    <script src="__ROOT__/tether-master/dist/js/tether.min.js"></script>
+    <script src="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.js"></script>
+    <style type="text/css" href="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.css"></style>
 
-   $specificationType.change(function () {
-        var typeId = $(this).children('option:selected').val();
-        if(typeId === "-1") return;
+    <script src="__ROOT__/js/pss-utils.js"></script>
 
-        $specification.attr('disabled',true);
-        $btnAdd.attr('disabled',true);
+    <script src="__ROOT__/select2-4.0.3/dist/js/select2.full.js"></script>
+    <link rel="stylesheet" href="__ROOT__/select2-4.0.3/dist/css/select2.css">
+    <link rel="stylesheet" href="__ROOT__/select2-4.0.3/dist/css/select2-bootstrap.css">
 
-        $specification.empty();
+    <script type="text/javascript">
 
-        $specification.append('<option selected="selected" value="-1">请选择规格</option>');
-        $.ajax({
-            url:SERVER_ROOT + "index/specification/get",
-            type:"POST",
-            data:{typeId:typeId},
-            cache: false,
-            success:function (response) {
-                if(response.total >= 0)
-                {
-                    for(var i=0; i<response.rows.length;i++)
-                    {
-                        $specification.append('<option value='+response.rows[i].id+'>'+
-                            response.rows[i].subject+'</option>');
-                    }
+        var $specificationType =  $("#specificationType");
+        var $specification =  $("#specification");
+        var $btnAdd = $("#btnAdd");
+        var rows = [];
+        var $table = $("#tblSpec").bootstrapTable({data:rows, url:"#"});
 
-                    $specification.attr('disabled',false);
-                    $btnAdd.attr('disabled',false);
-                }
-             }
-        });
-    });
+       $specificationType.change(function () {
+            var typeId = $(this).children('option:selected').val();
+            if(typeId === "-1") return;
 
-   $btnAdd.click(function () {
-        var id = $specification.val()
-        if(!isSpecExisted(id)){
-            rows.push({id:$specification.val()
-                ,type:$specificationType.find('option:selected').text()
-                ,specification:$specification.find('option:selected').text()});
+            $specification.attr('disabled',true);
+            $btnAdd.attr('disabled',true);
 
-            $table.bootstrapTable("load",{data:rows,silent: true});
-        }
+            $specification.empty();
 
-    });
-
-    function tableActions(value, row, index) {
-        return '<a href=JavaScript:deleteSpec(' + row.id +
-                 ')><i class="glyphicon glyphicon-trash"></i></a>';
-    }
-
-    function deleteSpec(id) {
-        for(var i=0;i < rows.length;i++) {
-            var row = rows[i];
-            if (row.id == id) {
-                rows.splice(i, 1);
-                $table.bootstrapTable("load",{data:rows,silent: true});
-                break;
-            }
-        }
-
-    }
-
-    function isSpecExisted(id) {
-        var result = false;
-      for(var i=0;i < rows.length;i++) {
-          var row = rows[i];
-          if (row.id == id) {
-              result = true;
-              break;
-          }
-      }
-      return result;
-    }
-
-
-    $("#selectCatalog").select2({
-        theme: "bootstrap",
-        ajax:{
-            url: SERVER_ROOT + "/index/catalog/get2",
-            dataType: 'json',
-            delay: 250,
-            data: function (params) {
-                return {
-                    q: params.term,
-                    page: params.page
-                };
-            },
-            processResults: function (data, params) {
-                params.page = params.page || 1;
-                return {
-                    results: data.rows,
-                    pagination: {
-                        more: (params.page * 20) < data.total
-                    }
-                };
-            },
-            cache:true
-        },
-        escapeMarkup:function (markup) {return markup;},
-        minimumInputLength:1,
-        templateResult:function (repo) {
-            if (repo.loading) return repo.text;
-            return repo.subject;
-
-        },
-        templateSelection:function (repo) {
-            $("#catId").val(repo.id);
-            return repo.subject || repo.text;
-        },
-        initSelection:function (element, callback) {
-            var data = {id:-1, text:"根结点"};
-            callback(data);
-        },
-    });
-
-
-    $("#selectSupplier").select2({
-        theme: "bootstrap",
-        ajax:{
-            url: SERVER_ROOT + "/index/supplier/get",
-            dataType: 'json',
-            delay: 250,
-            data: function (params) {
-                return {
-                    q: params.term,
-                    page: params.page
-                };
-            },
-            processResults: function (data, params) {
-                params.page = params.page || 1;
-                return {
-                    results: data.rows,
-                    pagination: {
-                        more: (params.page * 20) < data.total
-                    }
-                };
-            },
-            cache:true
-        },
-        escapeMarkup:function (markup) {return markup;},
-        minimumInputLength:1,
-        templateResult:function (repo) {
-            if (repo.loading) return repo.text;
-            return repo.company;
-
-        },
-        templateSelection:function (repo) {
-            $("#supplierId").val(repo.id);
-            return repo.company || repo.text;
-        },
-        initSelection:function (element, callback) {
-            var data = {id:-1, text:"根结点"};
-            callback(data);
-        },
-    });
-    
-    $("#btnSave").click(function () {
-        $.ajax({
-            url:SERVER_ROOT + "index/product/save",
-            type:"POST",
-            data:{form:getFormJson($("#formSubmit")), specifications:rows},
-
-            success:function (response) {
-                if(response !== true){
-                    var msg = "";
-                    for(var key in response){
-                        msg += response[key] + "<br/>";
-                    }
-
-
-                    $("#btnSave").attr('data-content',msg);
-                    $("#btnSave").attr('title',"出错了");
-                    $("#btnSave").popover('show');
-
-                }
-                else
-                {
-                    $("#btnSave").attr('data-content',msg);
-                    $("#btnSave").attr('title',"出错了");
-                    $("#btnSave").popover('hide');
-                    alert("保存成功!");
-                }
-            }
-        });
-    })
-
-
-    $(document).ready(function () {
-        var id = $("#id").val();
-        if(id!=="") {
+            $specification.append('<option selected="selected" value="-1">请选择规格</option>');
             $.ajax({
-                url:SERVER_ROOT + "index/product/getrow",
+                url:SERVER_ROOT + "index/specification/get",
                 type:"POST",
-                data:{id:id},
+                data:{typeId:typeId},
+                cache: false,
                 success:function (response) {
-                    if(response !== false) {
-                        var row = response.row;
-
-                        $("input[name='code']").val(row.code);
-                        $("input[name='subject']").val(row.subject);
-                        $("input[name='sku']").val(row.sku);
-                        $("input[name='spu']").val(row.spu);
-                        $("input[name='unit_price']").val(row.unit_price);
-                        $("input[name='warning_amount']").val(row.warning_amount);
-                        $("input[name='description']").val(row.description);
-
-                        $("input[name='catId']").val(row.catalog.id);
-                        var $selectCatalog = $("#selectCatalog"); // the element that Select2 is initialized on
-                        var $option = $("<option selected></option>"); // the new base option
-                        $option.val(row.catalog.id); // set the id
-                        $option.text(row.catalog.subject); // set the text
-                        $selectCatalog.append($option); // add it to the list of selections
-                        $selectCatalog.trigger("change"); // tell Select2 to update
-
-                        $("input[name='supplierId']").val(row.supplier.id);
-                        var $selectSupplier = $("#selectSupplier"); // the element that Select2 is initialized on
-                        var $option2 = $("<option selected></option>"); // the new base option
-                        $option2.val(row.supplier.id); // set the id
-                        $option2.text(row.supplier.company); // set the text
-                        $selectSupplier.append($option2); // add it to the list of selections
-                        $selectSupplier.trigger("change"); // tell Select2 to update
-
-
-                        console.log(row.specifications);
-
-                        for(var i=0;i<row.specifications.length;i++){
-                            var spec = row.specifications[i];
-                            rows.push({id:spec.id
-                                ,type:spec.code
-                                ,specification:spec.subject});
+                    if(response.total >= 0)
+                    {
+                        for(var i=0; i<response.rows.length;i++)
+                        {
+                            $specification.append('<option value='+response.rows[i].id+'>'+
+                                response.rows[i].subject+'</option>');
                         }
 
-                       $table.bootstrapTable("load",{data:rows,silent: true});
+                        $specification.attr('disabled',false);
+                        $btnAdd.attr('disabled',false);
+                    }
+                 }
+            });
+        });
+
+       $btnAdd.click(function () {
+            var id = $specification.val()
+            if(!isSpecExisted(id)){
+                rows.push({id:$specification.val()
+                    ,type:$specificationType.find('option:selected').text()
+                    ,specification:$specification.find('option:selected').text()});
+
+                $table.bootstrapTable("load",{data:rows,silent: true});
+            }
+
+        });
+
+        function tableActions(value, row, index) {
+            return '<a href=JavaScript:deleteSpec(' + row.id +
+                     ')><i class="glyphicon glyphicon-trash"></i></a>';
+        }
+
+        function deleteSpec(id) {
+            for(var i=0;i < rows.length;i++) {
+                var row = rows[i];
+                if (row.id == id) {
+                    rows.splice(i, 1);
+                    $table.bootstrapTable("load",{data:rows,silent: true});
+                    break;
+                }
+            }
+
+        }
+
+        function isSpecExisted(id) {
+            var result = false;
+          for(var i=0;i < rows.length;i++) {
+              var row = rows[i];
+              if (row.id == id) {
+                  result = true;
+                  break;
+              }
+          }
+          return result;
+        }
+
+
+        $("#selectCatalog").select2({
+            theme: "bootstrap",
+            ajax:{
+                url: SERVER_ROOT + "/index/catalog/get2",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term,
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.rows,
+                        pagination: {
+                            more: (params.page * 20) < data.total
+                        }
+                    };
+                },
+                cache:true
+            },
+            escapeMarkup:function (markup) {return markup;},
+            minimumInputLength:1,
+            templateResult:function (repo) {
+                if (repo.loading) return repo.text;
+                return repo.subject;
+
+            },
+            templateSelection:function (repo) {
+                $("#catId").val(repo.id);
+                return repo.subject || repo.text;
+            },
+            initSelection:function (element, callback) {
+                var data = {id:-1, text:"根结点"};
+                callback(data);
+            },
+        });
+
+
+        $("#selectSupplier").select2({
+            theme: "bootstrap",
+            ajax:{
+                url: SERVER_ROOT + "/index/supplier/get",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term,
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.rows,
+                        pagination: {
+                            more: (params.page * 20) < data.total
+                        }
+                    };
+                },
+                cache:true
+            },
+            escapeMarkup:function (markup) {return markup;},
+            minimumInputLength:1,
+            templateResult:function (repo) {
+                if (repo.loading) return repo.text;
+                return repo.company;
+
+            },
+            templateSelection:function (repo) {
+                $("#supplierId").val(repo.id);
+                return repo.company || repo.text;
+            },
+            initSelection:function (element, callback) {
+                var data = {id:-1, text:"根结点"};
+                callback(data);
+            },
+        });
+
+        $("#btnSave").click(function () {
+            $.ajax({
+                url:SERVER_ROOT + "index/product/save",
+                type:"POST",
+                data:{form:getFormJson($("#formSubmit")), specifications:rows},
+
+                success:function (response) {
+                    if(response !== true){
+                        var msg = "";
+                        for(var key in response){
+                            msg += response[key] + "<br/>";
+                        }
+
+
+                        $("#btnSave").attr('data-content',msg);
+                        $("#btnSave").attr('title',"出错了");
+                        $("#btnSave").popover('show');
+
+                    }
+                    else
+                    {
+                        $("#btnSave").attr('data-content',msg);
+                        $("#btnSave").attr('title',"出错了");
+                        $("#btnSave").popover('hide');
+                        alert("保存成功!");
                     }
                 }
             });
-        }
-    })
-</script>
-{include file="../public/footer" }
+        })
+
+
+        $(document).ready(function () {
+            var id = $("#id").val();
+            if(id!=="") {
+                $.ajax({
+                    url:SERVER_ROOT + "index/product/getrow",
+                    type:"POST",
+                    data:{id:id},
+                    success:function (response) {
+                        if(response !== false) {
+                            var row = response.row;
+
+                            $("input[name='code']").val(row.code);
+                            $("input[name='subject']").val(row.subject);
+                            $("input[name='sku']").val(row.sku);
+                            $("input[name='spu']").val(row.spu);
+                            $("input[name='unit_price']").val(row.unit_price);
+                            $("input[name='warning_amount']").val(row.warning_amount);
+                            $("input[name='description']").val(row.description);
+
+                            $("input[name='catId']").val(row.catalog.id);
+                            var $selectCatalog = $("#selectCatalog"); // the element that Select2 is initialized on
+                            var $option = $("<option selected></option>"); // the new base option
+                            $option.val(row.catalog.id); // set the id
+                            $option.text(row.catalog.subject); // set the text
+                            $selectCatalog.append($option); // add it to the list of selections
+                            $selectCatalog.trigger("change"); // tell Select2 to update
+
+                            $("input[name='supplierId']").val(row.supplier.id);
+                            var $selectSupplier = $("#selectSupplier"); // the element that Select2 is initialized on
+                            var $option2 = $("<option selected></option>"); // the new base option
+                            $option2.val(row.supplier.id); // set the id
+                            $option2.text(row.supplier.company); // set the text
+                            $selectSupplier.append($option2); // add it to the list of selections
+                            $selectSupplier.trigger("change"); // tell Select2 to update
+
+
+                            console.log(row.specifications);
+
+                            for(var i=0;i<row.specifications.length;i++){
+                                var spec = row.specifications[i];
+                                rows.push({id:spec.id
+                                    ,type:spec.code
+                                    ,specification:spec.subject});
+                            }
+
+                           $table.bootstrapTable("load",{data:rows,silent: true});
+                        }
+                    }
+                });
+            }
+        })
+    </script>
+{/block}

@@ -37,34 +37,3 @@
         </div>
     </form>
 </div>
-<script type="text/javascript">
-    $("#btnSave").click(function () {
-        $.ajax({
-            url:SERVER_ROOT + "index/specification/savetype",
-            type:"POST",
-            data:getFormJson($("#formSubmit")),
-            success:function (response) {
-                if(response !== true){
-                    var msg = "";
-                    for(var key in response){
-                        msg += response[key] + "<br/>";
-                    }
-
-                    $("#btnSave").attr('data-content',msg);
-                    $("#btnSave").attr('title',"出错了");
-                    $("#btnSave").popover('show');
-                }
-                else {
-                    //继续添加
-                    if (!$("#isClosed").is(':checked')){
-                        $("#btnSave").popover("hide");
-                        $("#myModal").modal("hide");
-                     }
-
-                    $table.bootstrapTable("refresh");
-                }
-            }
-        });
-        return false;
-    })
-</script>

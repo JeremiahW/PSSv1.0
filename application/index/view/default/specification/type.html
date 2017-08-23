@@ -1,118 +1,152 @@
-{include file="../public/header" }
-<style type="text/css" href="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.css"></style>
-<script src="__ROOT__/js/jquery-3.2.1.min.js"></script>
-<script src="__ROOT__/tether-master/dist/js/tether.min.js"></script>
-<script src="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.js"></script>
-<script src="__ROOT__/js/pss-utils.js"></script>
+{extend name="../public/master" /}
 
+{block name="topReferences"}{/block}
 
-<div class="content-wrapper">
-    <section class="content-header">
-        <h1>
-            规格类型管理
-            <small>规格类型</small>
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="active">Dashboard</li>
-        </ol>
-    </section>
-    <section class="content">
-        <div class="row">
-            <!-- left column -->
-            <div class="col-md-12">
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">规格类型</h3>
-                    </div>
-                    <div class="box-group">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary" id="btnAdd"><li class="glyphicon glyphicon-plus"></li></button>
-                            <button type="button" class="btn btn-danger" id="btnDelete"><li class="glyphicon glyphicon-trash"></li></button>
-                            <button type="button" class="btn btn-primary" id="btnActive"><li class="glyphicon glyphicon-ok"></li></button>
+{block name="mainContent"}
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>
+                规格类型管理
+                <small>规格类型</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li class="active">Dashboard</li>
+            </ol>
+        </section>
+        <section class="content">
+            <div class="row">
+                <!-- left column -->
+                <div class="col-md-12">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">规格类型</h3>
                         </div>
+                        <div class="box-group">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary" id="btnAdd"><li class="glyphicon glyphicon-plus"></li></button>
+                                <button type="button" class="btn btn-danger" id="btnDelete"><li class="glyphicon glyphicon-trash"></li></button>
+                                <button type="button" class="btn btn-primary" id="btnActive"><li class="glyphicon glyphicon-ok"></li></button>
+                            </div>
+                        </div>
+                        <table id="table"
+                               data-pagination="true"
+                               data-side-pagination="server"
+                               data-click-to-select="true"
+                               data-page-number="1"
+                               data-page-size="{$pageSize}"
+                               data-row-style="rowStyle"
+                               data-url="{$serverRoot}/index/specification/gettype">
+                            <thead>
+                            <tr>
+                                <th data-field="state" data-checkbox="true" ></th>
+                                <th data-field="id">Id</th>
+                                <th data-field="subject">规格类型</th>
+                                <th data-field="create_time" data-formatter="getLocalTime">创建日期</th>
+                                <th data-field="update_time" data-formatter="getLocalTime">修改日期</th>
+                                <th data-field="is_deleted" data-formatter="stateFormatter">状态</th>
+                                <th data-formatter="tableActions">Action</th>
+                            </tr>
+                            </thead>
+                        </table>
                     </div>
-                    <table id="table"
-                           data-pagination="true"
-                           data-side-pagination="server"
-                           data-click-to-select="true"
-                           data-page-number="1"
-                           data-page-size="{$pageSize}"
-                           data-row-style="rowStyle"
-                           data-url="{$serverRoot}/index/specification/gettype">
-                        <thead>
-                        <tr>
-                            <th data-field="state" data-checkbox="true" ></th>
-                            <th data-field="id">Id</th>
-                            <th data-field="subject">规格类型</th>
-                            <th data-field="create_time" data-formatter="getLocalTime">创建日期</th>
-                            <th data-field="update_time" data-formatter="getLocalTime">修改日期</th>
-                            <th data-field="is_deleted" data-formatter="stateFormatter">状态</th>
-                            <th data-formatter="tableActions">Action</th>
-                        </tr>
-                        </thead>
-                    </table>
                 </div>
             </div>
-        </div>
-    </section>
-</div>
-{include file="_typeform"}
-<script type="text/javascript">
-    var $table= $('#table').bootstrapTable();
-    function showModal(id, subject) {
-        $("#myModal").modal("show");
-        $("input[name='subject']").val(subject);
-        $("input[name='id']").val(id);
-    }
+        </section>
+    </div>
+    {include file="_typeform"}
+{/block}
 
-    $("#btnAdd").click(function () {
-        showModal("", "");
-    })
-
-    function stateFormatter(value, row, index) {
-        if(value == "0"){
-            return "启用"
-        }
-        else{
-            return "停用"
+{block name="bottomReferences"}
+    <style type="text/css" href="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.css"></style>
+    <script src="__ROOT__/tether-master/dist/js/tether.min.js"></script>
+    <script src="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.js"></script>
+    <script src="__ROOT__/js/pss-utils.js"></script>
+    <script type="text/javascript">
+        var $table= $('#table').bootstrapTable();
+        function showModal(id, subject) {
+            $("#myModal").modal("show");
+            $("input[name='subject']").val(subject);
+            $("input[name='id']").val(id);
         }
 
-        /*
-        if (index === 2) {
-            return {
-                disabled: true
-            };
-        }
-        if (index === 5) {
-            return {
-                disabled: true,
-                checked: true
+        $("#btnAdd").click(function () {
+            showModal("", "");
+        })
+
+        function stateFormatter(value, row, index) {
+            if(value == "0"){
+                return "启用"
             }
+            else{
+                return "停用"
+            }
+
+            /*
+            if (index === 2) {
+                return {
+                    disabled: true
+                };
+            }
+            if (index === 5) {
+                return {
+                    disabled: true,
+                    checked: true
+                }
+            }
+            */
         }
-        */
-    }
 
-    function rowStyle(row, index) {
-        //  var classes = ['active', 'success', 'info', 'warning', 'danger'];
+        function rowStyle(row, index) {
+            //  var classes = ['active', 'success', 'info', 'warning', 'danger'];
 
-        console.log(row.is_deleted);
-        if(row.is_deleted===1){
-            return {
-                classes: "danger"
-            };
+            console.log(row.is_deleted);
+            if(row.is_deleted===1){
+                return {
+                    classes: "danger"
+                };
+            }
+            return {};
+
         }
-        return {};
 
-    }
+        function tableActions(value, row, index) {
 
-    function tableActions(value, row, index) {
+            return '<a href=javascript:showModal('+row.id+
+                ',\''+ encodeURI(row.subject) +
 
-        return '<a href=javascript:showModal('+row.id+
-            ',\''+ encodeURI(row.subject) +
+                '\')'+' title="修改">' +
+                '<i class="glyphicon glyphicon-pencil"></i></a>';
+        }
 
-            '\')'+' title="修改">' +
-            '<i class="glyphicon glyphicon-pencil"></i></a>';
-    }
-</script>
-{include file="../public/footer" }
+        $("#btnSave").click(function () {
+            $.ajax({
+                url:SERVER_ROOT + "index/specification/savetype",
+                type:"POST",
+                data:getFormJson($("#formSubmit")),
+                success:function (response) {
+                    if(response !== true){
+                        var msg = "";
+                        for(var key in response){
+                            msg += response[key] + "<br/>";
+                        }
+
+                        $("#btnSave").attr('data-content',msg);
+                        $("#btnSave").attr('title',"出错了");
+                        $("#btnSave").popover('show');
+                    }
+                    else {
+                        //继续添加
+                        if (!$("#isClosed").is(':checked')){
+                            $("#btnSave").popover("hide");
+                            $("#myModal").modal("hide");
+                        }
+
+                        $table.bootstrapTable("refresh");
+                    }
+                }
+            });
+            return false;
+        })
+    </script>
+{/block}

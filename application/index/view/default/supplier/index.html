@@ -1,243 +1,315 @@
-{include file="../public/header" }
+{extend name="../public/master" /}
+{block name="topReferences"}{/block}
 
-<style type="text/css" href="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.css"></style>
-<script src="__ROOT__/js/jquery-3.2.1.min.js"></script>
-<script src="__ROOT__/tether-master/dist/js/tether.min.js"></script>
-<script src="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.js"></script>
-<script src="__ROOT__/js/pss-utils.js"></script>
-
-<script src="__ROOT__/select2-4.0.3/dist/js/select2.full.js"></script>
-<link rel="stylesheet" href="__ROOT__/select2-4.0.3/dist/css/select2.css">
-<link rel="stylesheet" href="__ROOT__/select2-4.0.3/dist/css/select2-bootstrap.css">
-
-<div class="content-wrapper">
-    <section class="content-header">
-        <h1>
-            供应商管理
-            <small>供应商列表</small>
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="active">Dashboard</li>
-        </ol>
-    </section>
-    <section class="content">
-        <div class="row">
-            <!-- left column -->
-            <div class="col-md-12">
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">选择供应商</h3>
-                    </div>
-                    <div class="box-group">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary" id="btnAdd"><li class="glyphicon glyphicon-plus"></li></button>
-                            <button type="button" class="btn btn-danger" id="btnDelete"><li class="glyphicon glyphicon-trash"></li></button>
-                            <button type="button" class="btn btn-primary" id="btnActive"><li class="glyphicon glyphicon-ok"></li></button>
+{block name="mainContent"}
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>
+                供应商管理
+                <small>供应商列表</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li class="active">Dashboard</li>
+            </ol>
+        </section>
+        <section class="content">
+            <div class="row">
+                <!-- left column -->
+                <div class="col-md-12">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">选择供应商</h3>
                         </div>
-                    </div>
-                    <table id="tblSupplier"
-                           data-pagination="true"
-                           data-side-pagination="server"
-                           data-click-to-select="true"
-                           data-page-number="1"
-                           data-page-size="{$pageSize}"
-                           data-row-style="rowStyle"
-
-                           data-url="{$serverRoot}/index/supplier/get">
-                        <thead>
-                        <tr >
-                            <th data-field="state" data-checkbox="true" ></th>
-                            <th data-field="id">ID</th>
-                            <th data-field="company">名称</th>
-                            <th data-field="address">地址</th>
-                            <th data-field="logo" data-formatter="imageFormatter">Logo</th>
-                            <th data-field="description">描述</th>
-                            <th data-field="create_time" data-formatter="getLocalTime">创建日期</th>
-                            <th data-field="update_time" data-formatter="getLocalTime">修改日期</th>
-                            <th data-field="is_deleted" data-formatter="stateFormatter">状态</th>
-                            <th data-formatter="tableActions">Action</th>
-                        </tr>
-
-                        </thead>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">联系人</h3>
-                    </div>
-                    <div class="box-group">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary" id="btnAdd2"><li class="glyphicon glyphicon-plus"></li></button>
-                            <button type="button" class="btn btn-danger" id="btnDelete2"><li class="glyphicon glyphicon-trash"></li></button>
-                            <button type="button" class="btn btn-primary" id="btnActive2"><li class="glyphicon glyphicon-ok"></li></button>
+                        <div class="box-group">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary" id="btnAdd"><li class="glyphicon glyphicon-plus"></li></button>
+                                <button type="button" class="btn btn-danger" id="btnDelete"><li class="glyphicon glyphicon-trash"></li></button>
+                                <button type="button" class="btn btn-primary" id="btnActive"><li class="glyphicon glyphicon-ok"></li></button>
+                            </div>
                         </div>
-                    </div>
-                    <table id="tblContact"
-                           data-pagination="true"
-                           data-side-pagination="server"
-                           data-click-to-select="true"
-                           data-page-number="1"
-                           data-page-size="{$pageSize}"
-                           data-row-style="rowStyle">
-                        <thead>
-                            <tr>
+                        <table id="tblSupplier"
+                               data-pagination="true"
+                               data-side-pagination="server"
+                               data-click-to-select="true"
+                               data-page-number="1"
+                               data-page-size="{$pageSize}"
+                               data-row-style="rowStyle"
+
+                               data-url="{$serverRoot}/index/supplier/get">
+                            <thead>
+                            <tr >
                                 <th data-field="state" data-checkbox="true" ></th>
-                                <th data-field="id">Id</th>
-                                <th data-field="name">姓名</th>
-                                <th data-field="phone">电话</th>
-                                <th data-field="email">邮箱</th>
-                                <th data-field="position">职位</th>
+                                <th data-field="id">ID</th>
+                                <th data-field="company">名称</th>
+                                <th data-field="address">地址</th>
+                                <th data-field="logo" data-formatter="imageFormatter">Logo</th>
                                 <th data-field="description">描述</th>
-                                <th data-formatter="tableActions2">Action</th>
+                                <th data-field="create_time" data-formatter="getLocalTime">创建日期</th>
+                                <th data-field="update_time" data-formatter="getLocalTime">修改日期</th>
+                                <th data-field="is_deleted" data-formatter="stateFormatter">状态</th>
+                                <th data-formatter="tableActions">Action</th>
                             </tr>
-                        </thead>
-                    </table>
+
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">联系人</h3>
+                        </div>
+                        <div class="box-group">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary" id="btnAdd2"><li class="glyphicon glyphicon-plus"></li></button>
+                                <button type="button" class="btn btn-danger" id="btnDelete2"><li class="glyphicon glyphicon-trash"></li></button>
+                                <button type="button" class="btn btn-primary" id="btnActive2"><li class="glyphicon glyphicon-ok"></li></button>
+                            </div>
+                        </div>
+                        <table id="tblContact"
+                               data-pagination="true"
+                               data-side-pagination="server"
+                               data-click-to-select="true"
+                               data-page-number="1"
+                               data-page-size="{$pageSize}"
+                               data-row-style="rowStyle"
+                                data-url="#">
+                            <thead>
+                                <tr>
+                                    <th data-field="state" data-checkbox="true" ></th>
+                                    <th data-field="id">Id</th>
+                                    <th data-field="name">姓名</th>
+                                    <th data-field="phone">电话</th>
+                                    <th data-field="email">邮箱</th>
+                                    <th data-field="position">职位</th>
+                                    <th data-field="description">描述</th>
+                                    <th data-formatter="tableActions2">Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
-</div>
-{include file="_supplier"}
-{include file="_contact"}
-<script type="text/javascript">
+        </section>
+    </div>
+    {include file="_supplier"}
+    {include file="_contact"}
+{/block}
 
-   var $table= $('#tblSupplier').bootstrapTable({
-        onClickRow:function (row, e, field) {
-            initContact(row.id);
-        }
-    });
+{block name="bottomReferences"}
+    <style type="text/css" href="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.css"></style>
+    <script src="__ROOT__/tether-master/dist/js/tether.min.js"></script>
+    <script src="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.js"></script>
+    <script src="__ROOT__/js/pss-utils.js"></script>
 
+    <script src="__ROOT__/select2-4.0.3/dist/js/select2.full.js"></script>
+    <link rel="stylesheet" href="__ROOT__/select2-4.0.3/dist/css/select2.css">
+    <link rel="stylesheet" href="__ROOT__/select2-4.0.3/dist/css/select2-bootstrap.css">
 
-   function initContact(id) {
-       console.log(id)
-       if (id === null) {
-           var rows = $table.bootstrapTable('getSelections');
-           if (rows.length > 0) {
-               id = rows[0].id;
-               console.log(id)
-           }
-       }
+    <script type="text/javascript">
 
-       var newURL = SERVER_ROOT+"/index/contact/get?sid="+id;
-       $tableContact.bootstrapTable("refresh",{"url":newURL,});
-
-   }
-
-
-    function stateFormatter(value, row, index) {
-        if(value == "0"){
-            return "启用"
-        }
-        else{
-            return "停用"
-        }
-
-        /*
-        if (index === 2) {
-            return {
-                disabled: true
-            };
-        }
-        if (index === 5) {
-            return {
-                disabled: true,
-                checked: true
-            }
-        }
-        */
-    }
-
-    function rowStyle(row, index) {
-        //  var classes = ['active', 'success', 'info', 'warning', 'danger'];
-
-        console.log(row.is_deleted);
-        if(row.is_deleted===1){
-            return {
-                classes: "danger"
-            };
-        }
-        return {};
-
-    }
-
-    function tableActions(value, row, index) {
-
-        return '<a href=javascript:showModal('+row.id+
-            ',\''+ encodeURI(row.company) +
-            '\',\''+ encodeURI(row.address) +
-            '\',\''+ encodeURI(row.description) +
-            '\',\''+ encodeURIComponent(row.logo) +
-            '\')'+' title="修改">' +
-            '<i class="glyphicon glyphicon-pencil"></i></a>';
-    }
-
-    function imageFormatter(value, row, index) {
-        return "<img src=\"" + IMAGE_ROOT + value +"\" border='0'/>";
-    }
-
-    function showModal(id, company, address, description,logo) {
-        company = decodeURI(company);
-        logo = decodeURIComponent(logo);
-        address = decodeURI(address);
-        description = decodeURI(description);
-
-
-
-        $("input[name='company']").val(company);
-        $("input[name='address']").val(address);
-        $("input[name='description']").val(description);
-        $("input[name='id']").val(id);
-        $('#modalSupplier').modal("show")
-
-    }
-    
-    $("#btnAdd").click(function () {
-        showModal("", "", "", "","");
-    })
-
-    $("#btnSave").click(function () {
-        var data = new FormData($("#formSupplier")[0]);
-
-        data.append( 'logo', $("#logo")[0].files[0]);
-
-        $.ajax({
-            url:SERVER_ROOT + "index/supplier/save",
-            type:"POST",
-            data:data,
-            cache: false,
-            processData: false,
-            contentType: false,
-            success:function (response) {
-                if(response !== true){
-                    console.log(response);
-                    var msg = "";
-                    for(var key in response){
-                        msg += response[key] + "<br/>";
-                    }
-                    $("#btnSave").attr('data-content',msg);
-                    $("#btnSave").attr('title',"出错了");
-                    $("#btnSave").popover('show');
-                }
-                else{
-
-                    $("#btnSave").popover("hide");
-                    $("#myModal").modal("hide");
-                    $table.bootstrapTable("refresh");
-                }
+       var $table= $('#tblSupplier').bootstrapTable({
+            onClickRow:function (row, e, field) {
+                initContact(row.id);
             }
         });
-        return false;
-    })
 
-    function rowClicked(row, e, field) {
-        console.log(row);
-    }
-</script>
 
-{include file="../public/footer" }
+       function initContact(id) {
+           console.log(id)
+           if (id === null) {
+               var rows = $table.bootstrapTable('getSelections');
+               if (rows.length > 0) {
+                   id = rows[0].id;
+                   console.log(id)
+               }
+           }
+
+           var newURL = SERVER_ROOT+"/index/contact/get?sid="+id;
+           $tableContact.bootstrapTable("refresh",{"url":newURL,});
+
+       }
+
+
+        function stateFormatter(value, row, index) {
+            if(value == "0"){
+                return "启用"
+            }
+            else{
+                return "停用"
+            }
+
+            /*
+            if (index === 2) {
+                return {
+                    disabled: true
+                };
+            }
+            if (index === 5) {
+                return {
+                    disabled: true,
+                    checked: true
+                }
+            }
+            */
+        }
+
+        function rowStyle(row, index) {
+            //  var classes = ['active', 'success', 'info', 'warning', 'danger'];
+
+            console.log(row.is_deleted);
+            if(row.is_deleted===1){
+                return {
+                    classes: "danger"
+                };
+            }
+            return {};
+
+        }
+
+        function tableActions(value, row, index) {
+
+            return '<a href=javascript:showModal('+row.id+
+                ',\''+ encodeURI(row.company) +
+                '\',\''+ encodeURI(row.address) +
+                '\',\''+ encodeURI(row.description) +
+                '\',\''+ encodeURIComponent(row.logo) +
+                '\')'+' title="修改">' +
+                '<i class="glyphicon glyphicon-pencil"></i></a>';
+        }
+
+        function imageFormatter(value, row, index) {
+            return "<img src=\"" + IMAGE_ROOT + value +"\" border='0'/>";
+        }
+
+        function showModal(id, company, address, description,logo) {
+            company = decodeURI(company);
+            logo = decodeURIComponent(logo);
+            address = decodeURI(address);
+            description = decodeURI(description);
+
+
+
+            $("input[name='company']").val(company);
+            $("input[name='address']").val(address);
+            $("input[name='description']").val(description);
+            $("input[name='id']").val(id);
+            $('#modalSupplier').modal("show")
+
+        }
+
+        $("#btnAdd").click(function () {
+            showModal("", "", "", "","");
+        })
+
+        $("#btnSave").click(function () {
+            var data = new FormData($("#formSupplier")[0]);
+
+            data.append( 'logo', $("#logo")[0].files[0]);
+
+            $.ajax({
+                url:SERVER_ROOT + "index/supplier/save",
+                type:"POST",
+                data:data,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success:function (response) {
+                    if(response !== true){
+                        console.log(response);
+                        var msg = "";
+                        for(var key in response){
+                            msg += response[key] + "<br/>";
+                        }
+                        $("#btnSave").attr('data-content',msg);
+                        $("#btnSave").attr('title',"出错了");
+                        $("#btnSave").popover('show');
+                    }
+                    else{
+
+                        $("#btnSave").popover("hide");
+                        $("#myModal").modal("hide");
+                        $table.bootstrapTable("refresh");
+                    }
+                }
+            });
+            return false;
+        })
+
+        function rowClicked(row, e, field) {
+            console.log(row);
+        }
+
+
+
+       var $tableContact = $("#tblContact").bootstrapTable();
+
+       $("#btnAdd2").click(function () {
+           var rows = $table.bootstrapTable('getSelections');
+           if(rows.length > 0){
+
+               showContactModal("","","","","","",rows[0].id);
+           }
+           else {
+               alert("请至少选择一条公司记录");
+           }
+       });
+
+       $("#btnSave2").click(function () {
+           $.ajax({
+               url:SERVER_ROOT + "index/contact/save",
+               type:"POST",
+               data:getFormJson($("#formContact")),
+               success:function (response) {
+                   console.log(response);
+                   if(response !== true){
+                       var msg = "";
+                       for(var key in response){
+                           msg += response[key] + "<br/>";
+                       }
+
+                       $("#btnSave2").attr('data-content',msg);
+                       $("#btnSave2").attr('title',"出错了");
+                       $("#btnSave2").popover('show');
+                   }
+                   else{
+                       $("#btnSave2").popover("hide");
+                       $("#modalContact").modal("hide");
+                       $tableContact.bootstrapTable("refresh");
+                   }
+               }
+           });
+           return false;
+       });
+
+       function showContactModal(id, name, phone, email, position, description, company_id) {
+           $("input[name='id']").val(id);
+           $("input[name='companyId']").val(company_id);
+           $("input[name='name']").val(name);
+           $("input[name='phone']").val(phone);
+           $("input[name='email']").val(email);
+           $("input[name='position']").val(position);
+           $("input[name='description']").val(description);
+           $("#modalContact").modal("show");
+
+           console.log("company id is: " + company_id);
+       }
+
+       function tableActions2(value, row, index) {
+
+           return '<a href=javascript:showContactModal('+row.id+
+               ',\''+ encodeURI(row.name) +
+               '\',\''+ encodeURI(row.phone) +
+               '\',\''+ encodeURI(row.email) +
+               '\',\''+ encodeURIComponent(row.position) +
+               '\',\''+ encodeURIComponent(row.description) +
+               '\',\''+ encodeURIComponent(row.company_id) +
+               '\')'+' title="修改">' +
+               '<i class="glyphicon glyphicon-pencil"></i></a>';
+       }
+    </script>
+{/block}
