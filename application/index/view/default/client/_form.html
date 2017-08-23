@@ -1,0 +1,57 @@
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <form action='{:Url("index/client/save")}' id="formSubmit">
+        <div class="modal-dialog" role="document" id="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header box box-info">
+                    <h5 class="modal-title" id="exampleModalLabel">用户管理</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="control-label">姓名</label>
+                        <input type="text" class="form-control" placeholder="" id="txtName" name="name"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">电话</label>
+                        <input type="text" class="form-control" placeholder="" id="txtPhone" name="phone"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">邮箱</label>
+                        <input type="text" class="form-control" placeholder="" id="txtEmail" name="email"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">身份证</label>
+                        <input type="text" class="form-control" placeholder="" id="txtShenfenzheng" name="shenfenzheng"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">地址</label>
+                        <input type="text" class="form-control" placeholder="" id="txtAddres" name="address"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">备注</label>
+                        <input type="text" class="form-control" placeholder="" id="txtDescription" name="description"/>
+                    </div>
+                </div>
+                <div class="popover popover-top">
+                    <h3 class="popover-title">Popover top</h3>
+                    <div class="popover-content">
+                        <p>Sed posuere consectetur est at lobortis. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum.</p>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="checkbox" class="android-checkbox" name="isClosed" id="isClosed" />继续添加
+                    <input type="hidden" value="" id="txtId" name="id"/>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="btnSave"
+                            data-container="body"
+                            data-toggle="popover"
+                            data-placement="top"
+                            data-content="出错了"
+                            data-html="true"
+                            data-trigger="focus">保存</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

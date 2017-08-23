@@ -20,7 +20,8 @@ function getFormJson(frm) {
 }
 
 //将Timestamp转换为DateTime字符串
-  function getLocalTime(value) {
-
+function getLocalTime(value) {
     return new Date(parseInt(value) * 1000).toLocaleString();
 }
+
+
