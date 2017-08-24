@@ -47,7 +47,7 @@
                                 </div>
                                 <div class="col-md-1">
                                     <div class="form-group">
-                                        <input type="text" value="" name="txtStorage" id="txtStorage" class="form-control" placeholder="库存余量" readonly/>
+                                        <input type="text" value="" name="txtStorage" id="txtStorage" class="form-control" placeholder="库存" readonly/>
                                     </div>
                                 </div>
                                 <div class="col-md-1">
@@ -58,12 +58,17 @@
 
                                 <div class="col-md-1">
                                     <div class="form-group">
-                                        <input type="number" value="" name="txtTotalAmt" id="txtTotalAmt" class="form-control" placeholder="总价"/>
+                                        <input type="number" value="" name="txtTotalAmt" id="txtTotalAmt" class="form-control" placeholder="总价" readonly/>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <input type="number" value="" name="txtActAmt" id="txtActAmt" class="form-control" placeholder="实收价格"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <input type="text" value="" name="txtDescription" id="txtDescription" class="form-control" placeholder="描述"/>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
@@ -135,6 +140,7 @@
                 if (row.id == id) {
                     products.splice(i, 1);
                     $table.bootstrapTable("load",{data:products,silent: true});
+                    refreshStatus();
                     break;
                 }
             }
@@ -151,10 +157,66 @@
             }
             return result;
         }
+        
+        function refreshStatus() {
+            var selectedClient = $("#selectClient").val();
+            var selectedProduct= $("#selectProduct").val();
+            var actAmt = $("#txtActAmt").val();
+            var num =    $("#txtNum").val();
+            var totalAmt = $("#txtTotalAmt").val();
+
+            //没有选择客户和产品, 则不允许添加.
+            if(selectedClient != "-1"
+                && selectedProduct != "-1"){
+                $("#btnAdd").attr('disabled',false);
+            }
+            else{
+                $("#btnAdd").attr('disabled',false);
+
+            }
+
+            //全部检查通过, 允许提交.
+            if(!isNaN(num)
+                && !isNaN(actAmt)
+                && !isNaN(totalAmt)
+                && selectedClient != "-1"
+                && products.length>0){
+
+                $("#btnSave").attr('disabled',false);
+            }
+            else{
+                $("#btnSave").attr('disabled',true);
+            }
+        }
 
         $("#btnSave").click(function () {
             console.log(products);
-        })
+          // console.log($("#cid").val());
+            $.ajax({
+                url:SERVER_ROOT + "index/sale/save",
+                type:"POST",
+                data:{products:products, cid:$("#cid").val(), description:$("#txtDescription").val(), uid:"1"},
+                success:function (response) {
+                    console.log(response);
+                    if(response !== true){
+                        var msg = "";
+                        for(var key in response){
+                            msg += response[key] + "<br/>";
+                        }
+
+                        /*
+                        $("#btnSave").attr('data-content',msg);
+                        $("#btnSave").attr('title',"出错了");
+                        $("#btnSave").popover('show');
+                        */
+                    }
+                    else{
+                        //TODO 成功
+                    }
+                }
+            });
+            return false;
+        });
 
         $("#btnAdd").click(function () {
             if(currentProduct.id !== -1) {
@@ -171,12 +233,11 @@
                         }
                     )
                     $table.bootstrapTable("load", {data: products});
+                    refreshStatus();
                 }
 
             }
         });
-
-
 
         $("#selectClient").select2({
             theme: "bootstrap",
@@ -205,7 +266,14 @@
             minimumInputLength:1,
             templateResult:function (repo) {
                 if (repo.loading) return repo.text;
-                return repo.name;
+
+                var result = "<div class='row'>";
+                result += "<div class='col-md-3'>"+repo.name+"</div>";
+                result += "<div class='col-md-3'>"+repo.phone+"</div>";
+                result += "<div class='col-md-3'>"+repo.email+"</div>";
+                result += "<div class='col-md-3'>"+repo.address+"</div>";
+                result += "</div>";
+                return result;
             },
             templateSelection:function (repo) {
                 $("#cid").val(repo.id);
@@ -245,7 +313,15 @@
             minimumInputLength:1,
             templateResult:function (repo) {
                 if (repo.loading) return repo.text;
-                return repo.subject;
+                var result = "<div class='row'>";
+                result += "<div class='col-md-2'>"+repo.supplier.company+"</div>";
+                result += "<div class='col-md-2'>"+repo.catalog.subject+"</div>";
+                result += "<div class='col-md-2'>"+repo.code+"</div>";
+                result += "<div class='col-md-2'>"+repo.subject+"</div>";
+                result += "<div class='col-md-2'>"+repo.unit_price+"</div>";
+                result += "<div class='col-md-2'>"+repo.amount+"</div>";
+                result += "</div>";
+                return result;
             },
             templateSelection:function (repo) {
                 currentProduct = repo;
@@ -253,6 +329,14 @@
                 $("#prodId").val(repo.id);
                 $("#txtStorage").val(repo.amount);
                 $("#txtUnitPrice").val(repo.unit_price);
+                $("#txtNum").val("1");
+
+                //设置默认的总价和默认的付款价格
+                if(typeof(repo.unit_price) !== "undefined"){
+                    var totalAmt = 1 * repo.unit_price;
+                    $("#txtTotalAmt").val(totalAmt);
+                    $("#txtActAmt").val(totalAmt);
+                }
 
                 return repo.subject || repo.text;
             },
@@ -261,7 +345,17 @@
                 callback(data);
             },
 
+        });
+
+
+        $("#selectProduct,#selectClient").on("change", function () {
+            refreshStatus();
         })
+
+        $(document).ready(function () {
+            refreshStatus();
+        })
+
     </script>
 
 {/block}
