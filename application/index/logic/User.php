@@ -70,7 +70,7 @@ class User extends BaseModel
             return $result;
     }
 
-    public function Get($page, $offset = -1, $pageSize=-1){
+    public function Get($page, $offset = -1, $pageSize=-1,$condition=[]){
         if($pageSize==-1){
             $pageSize = config('paginate.list_rows');
         }
@@ -79,8 +79,8 @@ class User extends BaseModel
             $page = 0;
             $offset = $page *  $pageSize;
         }
-        $count = Db::table($this->prefix."user")->count();
-        $users = Db::table($this->prefix."user")->limit($offset, $pageSize)->select();
+        $count = Db::table($this->prefix."user")->where($condition)->count();
+        $users = Db::table($this->prefix."user")->where($condition)->limit($offset, $pageSize)->select();
         return ["users"=>$users, "count"=>$count];
     }
 

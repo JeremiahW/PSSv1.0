@@ -26,15 +26,21 @@
                         </div>
                         <div class="box-body">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <select id="selectClient" name="selectClient" class="form-control">
                                     </select>
                                     <input type="hidden" value="" name="cid" id="cid" />
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <select id="selectProduct" name="selectProduct" class="form-control">
                                     </select>
                                     <input type="hidden" value="" name="prodId" id="prodId" />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <select id="selectSales" name="selectSales" class="form-control">
+                                    </select>
+                                    <input type="hidden" value="" name="salesId" id="salesId" />
                                 </div>
                             </div>
                             <hr/>
@@ -195,7 +201,7 @@
             $.ajax({
                 url:SERVER_ROOT + "index/sale/save",
                 type:"POST",
-                data:{products:products, cid:$("#cid").val(), description:$("#txtDescription").val(), uid:"1"},
+                data:{products:products, cid:$("#cid").val(), description:$("#txtDescription").val(), uid:$("#salesId").val()},
                 success:function (response) {
                     console.log(response);
                     if(response !== true){
@@ -347,6 +353,51 @@
 
         });
 
+        $("#selectSales").select2({
+            theme: "bootstrap",
+            ajax: {
+                url: SERVER_ROOT + "/index/user/get",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term,
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.rows,
+                        pagination: {
+                            more: (params.page * 20) < data.total
+                        }
+                    };
+                },
+                cache:true
+            },
+            escapeMarkup:function (markup) {return markup;},
+            minimumInputLength:1,
+            templateResult:function (repo) {
+                if (repo.loading) return repo.text;
+                var result = "<div class='row'>";
+                result += "<div class='col-md-3'>"+repo.username+"</div>";
+                result += "<div class='col-md-3'>"+repo.chinese+"</div>";
+                result += "<div class='col-md-3'>"+repo.email+"</div>";
+                result += "<div class='col-md-3'>"+repo.phone+"</div>";
+                result += "</div>";
+                return result;
+            },
+            templateSelection:function (repo) {
+                $("#salesId").val(repo.id);
+                return repo.chinese || repo.text;
+            },
+            initSelection:function (element, callback) {
+                var data = {id:-1, text:"选择销售人员"};
+                callback(data);
+            },
+
+        });
 
         $("#selectProduct,#selectClient").on("change", function () {
             refreshStatus();

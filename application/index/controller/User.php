@@ -36,9 +36,17 @@ class User extends BaseController
     function get(){
         // pageSize, pageNumber, searchText, sortName, sortOrder.
 
+        $term = Request::instance()->param("q");
+        $page = Request::instance()->param("page");
+        //过滤掉已经删除的
+        $condition['is_deleted'] = array('<>', "1");
+        if(!empty($term)){
+            $condition['chinese'] = array('like', "%$term%");
+        }
+
         $offset = Request::instance()->param("offset");
         $pageSize = Request::instance()->param("limit");
-        $resultSet = $this->user->Get(-1, $offset, $pageSize);
+        $resultSet = $this->user->Get($page, $offset, $pageSize,$condition);
         return json(["total"=>$resultSet["count"], "rows"=>$resultSet["users"]]);
     }
 
