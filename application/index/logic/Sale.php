@@ -140,4 +140,20 @@ class Sale extends BaseModel
 
     }
 
+
+    public function Get($page, $offset = -1, $pageSize=-1, $condition=[])
+    {
+        if($pageSize==-1){
+            $pageSize = config('paginate.list_rows');
+        }
+
+        if($offset==-1){
+            $page = 0;
+            $offset = $page *  $pageSize;
+        }
+        $model = Loader::model("Sale");
+        $count = $model->with("client,user,products,products.specifications")->where($condition)->count();
+        $rows = $model->with("client,user,products,products.specifications")->where($condition)->limit($offset,$pageSize)->select();
+        return ["rows"=>$rows, "count"=>$count];
+    }
 }

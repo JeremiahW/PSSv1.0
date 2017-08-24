@@ -22,6 +22,8 @@ class Sale extends BaseController
 
     function index()
     {
+        $this->assign("pageSize", $this->pageSize);
+        $this->assign("serverRoot", $this->serverRoot);
         return $this->fetch(":index");
     }
 
@@ -30,6 +32,13 @@ class Sale extends BaseController
         $this->assign("pageSize", $this->pageSize);
         $this->assign("serverRoot", $this->serverRoot);
         return $this->fetch(":sale");
+    }
+
+    function total()
+    {
+        $this->assign("pageSize", $this->pageSize);
+        $this->assign("serverRoot", $this->serverRoot);
+        return $this->fetch(":total");
     }
 
     function save()
@@ -49,5 +58,23 @@ class Sale extends BaseController
         {
             return json(false);
         }
+    }
+
+    function get()
+    {
+        $term = Request::instance()->param("q");
+        $page = Request::instance()->param("page");
+
+        $condition['id'] = array('<>', "null");
+        if(!empty($term)){
+            $condition['company'] = array('like', "%$term%");
+        }
+
+        $model = Loader::model("Sale", "logic");
+        $offset = Request::instance()->param("offset");
+        $pageSize = Request::instance()->param("limit");
+        $resultSet = $model->Get($page, $offset, $pageSize, $condition);
+        return json(["total"=>$resultSet["count"], "rows"=>$resultSet["rows"]]);
+
     }
 }
