@@ -87,12 +87,16 @@ class Sale extends BaseModel
                     //生成销售订单的详情数据
                     $saleProduct->save($data);
 
-                    //库存数量需要更新进仓库管理那部份。
+                    //TODO 已经销售的数量,记录至库存管理表中, 出库操作. 记录一条出库日志.
+
+                    //库存数量需要更新进仓库管理那部份。更新Product的数量,便于查询.
                     $product->save(["amount" => $leftAmt], ["id" => $pid]);
                 } else {
                     $saleTypeId = 2; //待采购
                     //如果库存小于=销售数量，则生成销售单。同时多余部份生成采购单。
                     $totalPending = $amount - $storedAmt;
+
+                    //TODO 已经销售的数量,记录至库存管理表中, 出库操作.
 
                     //购买的产品记录进销售订单详情库。
                     $data = [
@@ -152,8 +156,8 @@ class Sale extends BaseModel
             $offset = $page *  $pageSize;
         }
         $model = Loader::model("Sale");
-        $count = $model->with("client,user,products,products.specifications")->where($condition)->count();
-        $rows = $model->with("client,user,products,products.specifications")->where($condition)->limit($offset,$pageSize)->select();
+        $count = $model->with("client,user,type,products,products.specifications")->where($condition)->count();
+        $rows = $model->with("client,user,type,products,products.specifications")->where($condition)->limit($offset,$pageSize)->select();
         return ["rows"=>$rows, "count"=>$count];
     }
 }

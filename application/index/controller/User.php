@@ -38,6 +38,7 @@ class User extends BaseController
 
         $term = Request::instance()->param("q");
         $page = Request::instance()->param("page");
+
         //过滤掉已经删除的
         $condition['is_deleted'] = array('<>', "1");
         if(!empty($term)){

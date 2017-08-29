@@ -33,4 +33,9 @@ class Sale extends Model
     {
         return $this->hasMany("SaleProduct", "sale_id","id");
     }
+
+    function type()
+    {
+        return $this->belongsTo("SaleType", "type_id","id");
+    }
 }

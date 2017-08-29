@@ -1,6 +1,9 @@
 {extend name="../public/master" /}
 
-{block name="topReferences"}{/block}
+{block name="topReferences"}
+
+    <script type="text/javascript" src="__ROOT__/js/pss-utils.js"></script>
+{/block}
 
 {block name="mainContent"}
 <div class="content-wrapper">
@@ -43,10 +46,10 @@
                        <hr/>
                         <div class="row">
                             <div class="col-md-2">
-                                <input type="text" value="" name="order_number" id="order_number"  class="form-control" placeholder="创建开始日期"/>
+                                <input type="date" value="" name="order_number" id="start_date"  class="form-control" placeholder="创建开始日期"/>
                             </div>
                             <div class="col-md-2">
-                                <input type="text" value="" name="order_number" id="order_number"  class="form-control" placeholder="创建结束日期"/>
+                                <input type="date" value="" name="order_number" id="end_date"  class="form-control" placeholder="创建结束日期"/>
                             </div>
                             <div class="col-md-2">
                                 <button class="btn btn-primary" name="btnSearch" id="btnSearch">查询</button>
@@ -57,13 +60,24 @@
                     <hr/>
                     <div class="row">
                         <div class="col-md-12">
-                            <table id="table">
+                            <table id="table"
+                                   data-pagination="true"
+                                   data-side-pagination="server"
+                                   data-click-to-select="true"
+                                   data-page-number="1"
+                                   data-page-size="{$pageSize}"
+                                   data-row-style="rowStyle"
+                                   data-url="{$serverRoot}/index/sale/get">
                                 <thead>
                                     <tr>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
+                                        <th data-field="order_number">订单编号</th>
+                                        <th data-field="client" data-formatter="clientFormatter">客户名称</th>
+                                        <th data-field="user" data-formatter="saleFormatter">销售名称</th>
+                                        <th data-field="total_amount" data-formatter="decimalFormatter">总价</th>
+                                        <th data-field="total_actual_amount" data-formatter="decimalFormatter">实收总价</th>
+                                        <th data-field="type" data-formatter="typeFormatter">订单状态</th>
+                                        <th data-field="description">描述</th>
+                                        <th data-field="create_time" data-formatter="getLocalTime">创建日期</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -79,8 +93,172 @@
 {/block}
 
 {block name="bottomReferences"}
-    <style type="text/css" href="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.css"></style>
-    <script src="__ROOT__/tether-master/dist/js/tether.min.js"></script>
-    <script src="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.js"></script>
-    <script src="__ROOT__/js/pss-utils.js"></script>
+<style type="text/css" href="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.css"></style>
+<script type="text/javascript" src="__ROOT__/tether-master/dist/js/tether.min.js"></script>
+<script type="text/javascript" src="__ROOT__/bootstrap-table-1.11.1/dist/bootstrap-table.js"></script>
+
+<script src="__ROOT__/select2-4.0.3/dist/js/select2.full.js"></script>
+<link rel="stylesheet" href="__ROOT__/select2-4.0.3/dist/css/select2.css">
+<link rel="stylesheet" href="__ROOT__/select2-4.0.3/dist/css/select2-bootstrap.css">
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var $table = $("#table").bootstrapTable({
+                detailView:true,
+                onExpandRow:function (index, row, $products) {
+                    $products.html('<table></table>').find('table').bootstrapTable({
+                        data:row.products,
+                        url:"#",
+                       columns:[
+                           {field:'code', title:'产品编码'}
+                           ,{field:'subject', title:'产品名称'}
+                           ,{field:'description', title:'备注'}
+                           ,{field:'sku', title:'SKU'}
+                           ,{field:'spu', title:'SPU'}
+                           ,{field:'description', title:'备注'}
+                       ],
+                        detailView:true,
+                        onExpandRow:function (index2, row2, $specificitions) {
+                            $specificitions.html('<table></table>').find("table").bootstrapTable({
+                                data:row2.specifications,
+                                url:"#",
+                                columns:[
+                                    {field:"id", title:"ID"}
+                                    ,{field:"code", title:"规格编码"}
+                                    ,{field:"subject", title:"规格"}
+                                ],
+                            })
+                        }
+                    });
+                }
+            });
+
+
+            $("#btnSearch").click(function () {
+                console.log("btnSearch is clicked");
+
+                var startDate = $("#start_date").val();
+                var endDate = $("#end_date").val();
+                var orderNumber = $("#order_number").val();
+                var sid = $("#sid").val();
+                var cid = $("#cid").val();
+
+                console.log(orderNumber);
+
+                $table.bootstrapTable("refresh", {
+                    url:SERVER_ROOT+ "index/sale/get?startDate="+startDate+"&endDate="+endDate+"&orderNumber="+orderNumber+"&cid="+cid+"&sid="+sid
+                })
+
+            });
+
+            $("#selectClient").select2({
+                theme: "bootstrap",
+                ajax: {
+                    url: SERVER_ROOT + "/index/client/get",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.rows,
+                            pagination: {
+                                more: (params.page * 20) < data.total
+                            }
+                        };
+                    },
+                    cache:true
+                },
+                escapeMarkup:function (markup) {return markup;},
+                minimumInputLength:1,
+                templateResult:function (repo) {
+                    if (repo.loading) return repo.text;
+
+                    return repo.name;
+
+                },
+                templateSelection:function (repo) {
+                    $("#cid").val(repo.id);
+                    return repo.name || repo.text;
+                },
+                initSelection:function (element, callback) {
+                    var data = {id:-1, text:"请选择客户"};
+                    callback(data);
+                },
+
+            })
+
+            $("#selectSales").select2({
+                theme: "bootstrap",
+                ajax: {
+                    url: SERVER_ROOT + "/index/user/get",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.rows,
+                            pagination: {
+                                more: (params.page * 20) < data.total
+                            }
+                        };
+                    },
+                    cache:true
+                },
+                escapeMarkup:function (markup) {return markup;},
+                minimumInputLength:1,
+                templateResult:function (repo) {
+                    if (repo.loading) return repo.text;
+
+                    return repo.chinese;
+
+                },
+                templateSelection:function (repo) {
+                    $("#uid").val(repo.id);
+                    return repo.chinese || repo.text;
+                },
+                initSelection:function (element, callback) {
+                    var data = {id:-1, text:"请选择销售"};
+                    callback(data);
+                },
+
+            })
+        });
+        
+
+
+        function clientFormatter(value, row, index) {
+            //console.log(value);
+            return value.name;
+        }
+
+        function saleFormatter(value, row, index) {
+            return value.chinese;
+        }
+
+        function typeFormatter(value,row,index) {
+            return value.subject;
+        }
+
+        function decimalFormatter(value,row,index) {
+            if(!isNaN(value)){
+                return formatMoney(value, 0, "￥ ", ",", 2); // £ 12,345
+            }
+            return value;
+        }
+
+
+
+    </script>
 {/block}

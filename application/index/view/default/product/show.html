@@ -101,26 +101,7 @@
 
             }
         }
-        function rowStyle(row, index) {
-            //  var classes = ['active', 'success', 'info', 'warning', 'danger'];
 
-            if(row.amount <= row.warning_amount){
-                return {
-                    classes: "danger"
-                };
-            }
-            return {};
-
-        }
-
-        function stateFormatter(value, row, index) {
-            if(value == "0"){
-                return "启用"
-            }
-            else{
-                return "停用"
-            }
-        }
 
         function tableActions(value, row, index) {
 

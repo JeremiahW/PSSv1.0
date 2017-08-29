@@ -74,41 +74,6 @@
             showModal("", "");
         })
 
-        function stateFormatter(value, row, index) {
-            if(value == "0"){
-                return "启用"
-            }
-            else{
-                return "停用"
-            }
-
-            /*
-            if (index === 2) {
-                return {
-                    disabled: true
-                };
-            }
-            if (index === 5) {
-                return {
-                    disabled: true,
-                    checked: true
-                }
-            }
-            */
-        }
-
-        function rowStyle(row, index) {
-            //  var classes = ['active', 'success', 'info', 'warning', 'danger'];
-
-            console.log(row.is_deleted);
-            if(row.is_deleted===1){
-                return {
-                    classes: "danger"
-                };
-            }
-            return {};
-
-        }
 
         function tableActions(value, row, index) {
 

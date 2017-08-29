@@ -10,6 +10,7 @@ namespace app\index\controller;
 
 
 use app\common\BaseController;
+use app\common\PssUtils;
 use think\Loader;
 use think\Request;
 
@@ -64,15 +65,44 @@ class Sale extends BaseController
     {
         $term = Request::instance()->param("q");
         $page = Request::instance()->param("page");
+        $startDate = Request::instance()->param("startDate");
+        $endDate = Request::instance()->param("endDate");
+        $orderNumber = Request::instance()->param("orderNumber");
+        $sid = Request::instance()->param("sid");
+        $cid = Request::instance()->param("cid");
+
 
         $condition['id'] = array('<>', "null");
         if(!empty($term)){
             $condition['company'] = array('like', "%$term%");
         }
 
+        if(!empty($orderNumber)){
+            $condition['order_number'] = array('=', "$orderNumber");
+        }
+
+        if(!empty($sid) && $sid !== -1){
+            //TODO 根据权限判断用户是否有访问全部销售订单的权限.
+            $condition['user_id'] = array('=', "$orderNumber");
+        }
+
+        if(!empty($cid) && $cid !== "-1"){
+            $condition['client_id'] = array('=', "$orderNumber");
+        }
+
+        if(!empty($startDate)){
+            $condition['create_time'] = array('>=', strtotime($startDate));
+        }
+
+        if(!empty($endDate)){
+            $condition['create_time'] = array('<=', strtotime($endDate));
+        }
+
+
         $model = Loader::model("Sale", "logic");
         $offset = Request::instance()->param("offset");
         $pageSize = Request::instance()->param("limit");
+        $order = Request::instance()->param("order");
         $resultSet = $model->Get($page, $offset, $pageSize, $condition);
         return json(["total"=>$resultSet["count"], "rows"=>$resultSet["rows"]]);
 
