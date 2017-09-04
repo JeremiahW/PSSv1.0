@@ -83,11 +83,11 @@ class Sale extends BaseController
 
         if(!empty($sid) && $sid !== -1){
             //TODO 根据权限判断用户是否有访问全部销售订单的权限.
-            $condition['user_id'] = array('=', "$orderNumber");
+            $condition['user_id'] = array('=', "$sid");
         }
 
         if(!empty($cid) && $cid !== "-1"){
-            $condition['client_id'] = array('=', "$orderNumber");
+            $condition['client_id'] = array('=', "$cid");
         }
 
         if(!empty($startDate)){

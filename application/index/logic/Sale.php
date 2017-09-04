@@ -11,6 +11,7 @@ namespace app\index\logic;
 
 use app\common\BaseModel;
 use app\index\model\Purchase;
+use app\index\model\PurchaseItem;
 use app\index\model\SaleProduct;
 use think\Db;
 use think\Exception;
@@ -51,6 +52,8 @@ class Sale extends BaseModel
             $saleTypeId = -1;
             $totalAmt = 0;
             $totalActAmt = 0;
+            $purchaseItems = array();
+
             foreach ($products as $p) {
                 //根据产品ID 获取产品库存。
                 $pid = $p["id"];
@@ -114,18 +117,36 @@ class Sale extends BaseModel
                     //库存数量需要更新进仓库管理那部份。
                     $product->save(["amount" => $storedAmt - $amount], ["id" => $pid]);
 
+
+                    //TODO 先生成一条采购订单的记录；然后循环内的数据为采购的明细信息。
                     //自动生成采购订单
-                    $purchase->save([
+                    array_push($purchaseItems, [
                         "sale_id" => $saleId,
                         "product_id" => $pid,
                         "amount" => $totalPending,
-                        "state" => 1, //提交审核
+                        "state" => 1, //提交审核,
+                        "purchase_id"=>-1,
                     ]);
-
                 }
 
 
             }
+
+            //TODO 如果有采购订单，则生成采购订单信息。
+            if(sizeof($purchaseItems) > 0){
+                $purchase->save([
+                   "sale_id"=>$saleId,
+                   "code"=>"CODE001",
+                    "state"=>"1"
+                ]);
+                $purchase_id = $purchase->getLastInsID();
+
+                $item = new PurchaseItem();
+                //TODO 把purchaseItems里面的purchase_id替换一下。
+                $item->saveAll($purchaseItems);
+            }
+            // $purchase->save();
+
 
             //更新订单信息
             $sale->allowField(true)->save(["type_id" => $saleTypeId,
