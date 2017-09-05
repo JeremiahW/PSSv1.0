@@ -13,5 +13,8 @@ use think\Model;
 
 class PurchaseItem extends Model
 {
-
+    public function product()
+    {
+        return $this->belongsTo("Product", "product_id", "id");
+    }
 }
