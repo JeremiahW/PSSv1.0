@@ -118,8 +118,7 @@ class Sale extends BaseModel
                     $product->save(["amount" => $storedAmt - $amount], ["id" => $pid]);
 
 
-                    //TODO 先生成一条采购订单的记录；然后循环内的数据为采购的明细信息。
-                    //自动生成采购订单
+                    //记录待采购数据, 用于生成purchase_item.
                     array_push($purchaseItems, [
                         "sale_id" => $saleId,
                         "product_id" => $pid,
@@ -132,21 +131,23 @@ class Sale extends BaseModel
 
             }
 
-            //TODO 如果有采购订单，则生成采购订单信息。
+            //如果有采购订单，则生成Purchase采购订单信息。同时将采购子项添加至Purchase_Item表中
             if(sizeof($purchaseItems) > 0){
                 $purchase->save([
                    "sale_id"=>$saleId,
-                   "code"=>"CODE001",
+                   "code"=>time(),
                     "state"=>"1"
                 ]);
                 $purchase_id = $purchase->getLastInsID();
 
+                //将Purchase表的外键赋上
+                for($i=0; $i<sizeof($purchaseItems); $i++) {
+                    $purchaseItems[$i]["purchase_id"] = $purchase_id;
+                }
+
                 $item = new PurchaseItem();
-                //TODO 把purchaseItems里面的purchase_id替换一下。
                 $item->saveAll($purchaseItems);
             }
-            // $purchase->save();
-
 
             //更新订单信息
             $sale->allowField(true)->save(["type_id" => $saleTypeId,
